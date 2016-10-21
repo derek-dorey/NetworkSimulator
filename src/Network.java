@@ -32,15 +32,26 @@ public class Network {
 	}
 
 	public boolean connect(String a, String b) {
-		boolean outa = nodeNetwork.get(a).addNeighbour(nodeNetwork.get(b));
-		boolean outb = nodeNetwork.get(b).addNeighbour(nodeNetwork.get(a));
-		return outa || outb;
+		if(a.equals(b)){
+			return false;
+		}
+		if(nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)){
+			boolean outa = nodeNetwork.get(a).addNeighbour(nodeNetwork.get(b));
+			boolean outb = nodeNetwork.get(b).addNeighbour(nodeNetwork.get(a));
+			return outa || outb;
+		}else{
+			return false;
+		}
 	}
 
 	public boolean disconnect(String a, String b) {
-		boolean outa = nodeNetwork.get(a).removeNeighbour(nodeNetwork.get(b));
-		boolean outb = nodeNetwork.get(b).removeNeighbour(nodeNetwork.get(a));
-		return outa || outb;
+		if(nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)){
+			boolean outa = nodeNetwork.get(a).removeNeighbour(nodeNetwork.get(b));
+			boolean outb = nodeNetwork.get(b).removeNeighbour(nodeNetwork.get(a));
+			return outa || outb;
+		}else{
+			return false;
+		}
 	}
 
 	public int send(String from, String to) {
@@ -59,25 +70,7 @@ public class Network {
 
 	public static void main(String args[]) {
 
-		Network testNetwork = new Network();
+		new UI(new Network()).run();
 
-		testNetwork.create("a");
-		testNetwork.create("b");
-		testNetwork.create("c");
-		testNetwork.create("d");
-		testNetwork.create("e");
-
-		testNetwork.connect("a", "b");
-		testNetwork.connect("a", "c");
-		testNetwork.connect("c", "d");
-		testNetwork.connect("d", "b");
-		testNetwork.connect("a", "e");
-		testNetwork.connect("b", "e");
-
-		testNetwork.remove("d");
-
-		int number_of_hops = testNetwork.send("a", "e");
-
-		System.out.println("number of hops: " + number_of_hops);
 	}
 }
