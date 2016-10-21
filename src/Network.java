@@ -1,9 +1,14 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Network {
 
 	private Map<String, Node> nodeNetwork;
+	private Set<Message> results;
 
 	public Network() {
 		nodeNetwork = new HashMap<>();
@@ -14,7 +19,7 @@ public class Network {
 			return false;
 		}
 
-		nodeNetwork.put(id, new Node(id));
+		nodeNetwork.put(id, new Node(this, id));
 		return true;
 	}
 
@@ -32,40 +37,95 @@ public class Network {
 	}
 
 	public boolean connect(String a, String b) {
-		if(a.equals(b)){
+		if (a.equals(b)) {
 			return false;
 		}
-		if(nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)){
+		if (nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)) {
 			boolean outa = nodeNetwork.get(a).addNeighbour(nodeNetwork.get(b));
 			boolean outb = nodeNetwork.get(b).addNeighbour(nodeNetwork.get(a));
 			return outa || outb;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
 	public boolean disconnect(String a, String b) {
-		if(nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)){
+		if (nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)) {
 			boolean outa = nodeNetwork.get(a).removeNeighbour(nodeNetwork.get(b));
 			boolean outb = nodeNetwork.get(b).removeNeighbour(nodeNetwork.get(a));
 			return outa || outb;
-		}else{
+		} else {
 			return false;
 		}
 	}
 
-	public int send(String from, String to) {
-		try {
-			if (nodeNetwork.containsKey(from) && nodeNetwork.containsKey(to)) {
-				return nodeNetwork.get(from).sendTo(nodeNetwork.get(to).getID());
-			} else {
-				System.out.println("\n\nOne or more of the nodes involved do not exist");
-				return -1;
-			}
-		} catch (StackOverflowError e) {
-			System.out.println("\n\nUnable to get to the target node");
-			return -1;
+	public void record(Message m) {
+		results.add(m);
+	}
+
+	// The Network only supports 1 simulation at a time
+	public synchronized void simulate(int steps, int sendInterval) {
+		if (nodeNetwork.keySet().size() < 2) {
+			System.out.println("The network is too small for a meaningful simulation");
+			return;
 		}
+
+		results = new HashSet<>();
+
+		// This is the simulation loop
+		for (int i = 0; i < steps; i++) {
+			if (i % sendInterval == 0) {
+				createNewRandomMessage();
+			}
+			for (Node n : nodeNetwork.values()) {
+				n.prepairToSend();
+			}
+			for (Node n : nodeNetwork.values()) {
+				n.send();
+			}
+		}
+
+		// sender to (receiver to hop counts)
+		Map<String, Map<String, List<Integer>>> collect = new HashMap<>();
+
+		for (Message m : results) {
+			if (!collect.containsKey(m.start)) {
+				collect.put(m.start, new HashMap<>());
+			}
+			Map<String, List<Integer>> senderMap = collect.get(m.start);
+			if (!senderMap.containsKey(m.destination)) {
+				senderMap.put(m.destination, new ArrayList<>());
+			}
+			senderMap.get(m.destination).add(m.getHops());
+		}
+
+		for (String sender : collect.keySet()) {
+			Map<String, List<Integer>> senderMap = collect.get(sender);
+			for (String destination : senderMap.keySet()) {
+				List<Integer> hopCounts = senderMap.get(destination);
+				double av = calculateAverage(hopCounts);
+				System.out.println("Messages sent from '" + sender + "' to '" + destination + "' took an average of "
+						+ av + " hops");
+			}
+		}
+
+	}
+
+	private void createNewRandomMessage() {
+		String[] keys = nodeNetwork.keySet().toArray(new String[] {});
+
+		int from = (int) (Math.random() * keys.length);
+		int to = from;
+
+		while (from == to) {
+			to = (int) (Math.random() * keys.length);
+		}
+
+		send(keys[from], keys[to]);
+	}
+
+	private void send(String from, String to) {
+		nodeNetwork.get(from).receive(new Message(from, to));
 	}
 
 	public static void main(String args[]) {
@@ -73,4 +133,17 @@ public class Network {
 		new UI(new Network()).run();
 
 	}
+
+	private double calculateAverage(List<Integer> numbers) {
+		if (numbers.isEmpty()) {
+			return 0.0;
+		} else {
+			int sum = 0;
+			for (Integer i : numbers) {
+				sum += i;
+			}
+			return ((double) sum) / ((double) numbers.size());
+		}
+	}
+
 }
