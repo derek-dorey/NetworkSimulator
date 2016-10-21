@@ -1,7 +1,16 @@
 import java.util.Scanner;
 import java.util.Arrays;
 
-public class UI implements Runnable {
+/**
+ * User Interface that prompts the user for commands.
+ * Will create a network based on user input to run the simulation.
+ * Will allow user to edit the network by adding connections, 
+ * removing connections or adding new nodes.
+ * Will print were message was sent from and and to with average hops.
+ * 
+ * @author Benjamin Tobalt
+ */
+public class UI {
 
 	private Network network;
 
@@ -14,7 +23,7 @@ public class UI implements Runnable {
 
 		// system scanner
 		Scanner reader = new Scanner(System.in);
-		System.out.println("type 'help' for options");
+		System.out.println("Type 'help' for options");
 		while (true) {
 
 			// prompt user to enter a command ... this is just to inform user
@@ -24,8 +33,7 @@ public class UI implements Runnable {
 			// remove white space and store into array s
 			String[] s = reader.nextLine().split("\\s+");
 
-			// System.out.println(Arrays.toString(s));
-
+			//help command
 			if ("help".equalsIgnoreCase(s[0])) {
 
 				if (s.length <= 2) {
@@ -34,7 +42,8 @@ public class UI implements Runnable {
 					System.out.println("This is not valid syntax, please use:");
 					help(new String[] { s[0] });
 				}
-
+				
+				//create command
 			} else if ("create".equalsIgnoreCase(s[0])) {
 
 				if (s.length > 1) {
@@ -44,6 +53,7 @@ public class UI implements Runnable {
 					help(new String[] { s[0] });
 				}
 
+				//connect command
 			} else if ("connect".equalsIgnoreCase(s[0])) {
 
 				if (s.length == 3) {
@@ -53,6 +63,7 @@ public class UI implements Runnable {
 					help(new String[] { s[0] });
 				}
 
+				//disconnect command
 			} else if ("disconnect".equalsIgnoreCase(s[0])) {
 
 				if (s.length == 3) {
@@ -62,6 +73,7 @@ public class UI implements Runnable {
 					help(new String[] { s[0] });
 				}
 
+				//remove command
 			} else if ("remove".equalsIgnoreCase(s[0])) {
 
 				if (s.length > 1) {
@@ -71,6 +83,7 @@ public class UI implements Runnable {
 					help(new String[] { s[0] });
 				}
 
+				//simulate command
 			} else if ("simulate".equalsIgnoreCase(s[0])) {
 				if (s.length == 3) {
 					simulate(Arrays.copyOfRange(s, 1, s.length));
@@ -79,6 +92,7 @@ public class UI implements Runnable {
 					help(new String[] { s[0] });
 				}
 
+				//quit command
 			} else if ("quit".equalsIgnoreCase(s[0])) {
 
 				if (s.length == 1) {
@@ -143,6 +157,7 @@ public class UI implements Runnable {
 		}
 	}
 
+	//statements created when you type 'help' command and all of it's sub commands
 	private void help(String[] arg) {
 
 		if (arg.length == 0) {
@@ -155,7 +170,6 @@ public class UI implements Runnable {
 			System.out.println("simulate stepCount messageCreatingInterval");
 			System.out.println("quit\n");
 		} else {
-			// TODO
 			if ("help".equalsIgnoreCase(arg[0])) {
 				System.out.println("help [command]");
 				System.out.println("If the command is not given, it lists all valid command syntax");

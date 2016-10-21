@@ -5,6 +5,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Node class takes care of Creating nodes, and sets and removes neighbours.
+ * Also sends and receives the messages that the simulation passes.
+ * 
+ * @author Derek Dorey & Griffin Barrett
+ *
+ */
 public class Node {
 
 	private final String id;
@@ -41,6 +48,7 @@ public class Node {
 		}
 	}
 
+	//sends message to random neighbour, determined by a random number
 	private void send(Message m) {
 		int randomNeighbour = (int) (Math.random() * neighbours.size());
 
@@ -61,6 +69,7 @@ public class Node {
 		return neighbours.remove(oldNeighbour);
 	}
 
+	//getters and setters
 	public Set<Node> getNeighbours() {
 		return Collections.unmodifiableSet(neighbours);
 	}
