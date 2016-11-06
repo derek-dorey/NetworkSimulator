@@ -1,5 +1,7 @@
 package core;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -140,12 +142,10 @@ public class Network {
 		nodeNetwork.get(from).receive(new Message(from, to));
 	}
 
-	public static void main(String args[]) {
-
-		new UI(new Network()).run();
-
+	public Collection<Node> getNodes(){
+		return Collections.unmodifiableCollection(nodeNetwork.values());
 	}
-
+	
 	private double calculateAverage(List<Integer> numbers) {
 		if (numbers.isEmpty()) {
 			return 0.0;
@@ -158,4 +158,9 @@ public class Network {
 		}
 	}
 
+	public static void main(String args[]) {
+
+		new UI(new Network()).run();
+
+	}
 }
