@@ -1,3 +1,12 @@
+/**
+ * Makes a print statement for the user that displays the start and destination
+ * of the message with the average hops.
+ * no equals() or hashcode() because the only equality for a Message should
+ * be identity
+ * 
+ * @author Griffin Barrett
+ *
+ */
 public class Message {
 	public final String start;
 	public final String destination;
@@ -21,6 +30,4 @@ public class Message {
 		return "Message from:'" + start + "' to:'" + destination + "' with:" + hops + " hops";
 	}
 
-	// no equals() or hashcode() because the only equality for a Message should
-	// be identity
 }

@@ -5,6 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class adds connections, removes connections from nodes and runs the simulation.
+ * Also implements the random path algorithumn and calculates average number of hops.
+ * 
+ * @author Griffin Barrett
+ *
+ */
 public class Network {
 
 	private Map<String, Node> nodeNetwork;
@@ -36,6 +43,7 @@ public class Network {
 		return true;
 	}
 
+	//connects two nodes with given names
 	public boolean connect(String a, String b) {
 		if (a.equals(b)) {
 			return false;
@@ -48,7 +56,8 @@ public class Network {
 			return false;
 		}
 	}
-
+	
+	//disconnects two nodes with given names
 	public boolean disconnect(String a, String b) {
 		if (nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)) {
 			boolean outa = nodeNetwork.get(a).removeNeighbour(nodeNetwork.get(b));
