@@ -1,4 +1,8 @@
+package gui;
 import java.util.Scanner;
+
+import core.Network;
+
 import java.util.Arrays;
 
 /**
