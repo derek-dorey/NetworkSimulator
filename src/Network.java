@@ -78,7 +78,7 @@ public class Network {
 				createNewRandomMessage();
 			}
 			for (Node n : nodeNetwork.values()) {
-				n.prepairToSend();
+				//n.prepairToSend();
 			}
 			for (Node n : nodeNetwork.values()) {
 				n.send();
