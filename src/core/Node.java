@@ -1,3 +1,4 @@
+package core;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class Node {
 	}
 
 	public void send() {
-		Message m = buffer.poll(); 
+		Message m = buffer.getFirst(); 
 		if(m != null) {
 			m.incHops();
 			send(m);

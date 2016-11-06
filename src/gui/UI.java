@@ -1,4 +1,8 @@
+package gui;
 import java.util.Scanner;
+
+import core.Network;
+
 import java.util.Arrays;
 
 /**
@@ -10,8 +14,6 @@ import java.util.Arrays;
  * 
  * @author Benjamin Tobalt
  */
-
-
 public class UI {
 
 	private Network network;
@@ -85,26 +87,26 @@ public class UI {
 					help(new String[] { s[0] });
 				}
 
-				//simulate command
-			} else if ("step".equalsIgnoreCase(s[0])) {
+				
+			} else if ("step".equalsIgnoreCase(s[0])) {	//step through the simulation
 				if (s.length == 1) {
 					simulate(Arrays.copyOfRange(s, 1, s.length));
 				} else {
 					System.out.println("This is not valid syntax, please use:");
 					help(new String[] { s[0] });
 				}
-				
-			} else if ("rate".equalsIgnoreCase(s[0])) {
+
+			
+			}  else if ("rate".equalsIgnoreCase(s[0])) { //option to set rate
 				if (s.length > 1) {
 					network.rate = Integer.parseInt(s[1]);
-					System.out.println(network.rate);
+					System.out.println("Package generation rate set to: " +  network.rate);
 				} else {
 					System.out.println("This is not valid syntax, please use:");
 					help(new String[] { s[0] });
 				}	
 				
-				//quit command
-			} else if ("quit".equalsIgnoreCase(s[0])) {
+			}  else if ("quit".equalsIgnoreCase(s[0])) { //quit command
 
 				if (s.length == 1) {
 					break;
@@ -161,8 +163,7 @@ public class UI {
 
 	private void simulate(String[] args) {
 		try {
-			//network.simulate(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
-			network.simulate();
+			network.simulate(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
 		} catch (NumberFormatException e) {
 			System.out
 					.println("One or more of the arguments that you passed in should have been integers but where not");

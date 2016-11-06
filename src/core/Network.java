@@ -1,9 +1,14 @@
+package core;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import gui.UI;
 
 /**
  * This class adds connections, removes connections from nodes and runs the simulation.
@@ -13,12 +18,12 @@ import java.util.Set;
  *
  */
 public class Network {
+	
+	public int rate = 1;		//the rate at which new messages will be injected into the simulation (i.e, for rate = 5, every 5th step will inject a new message)
+	public static int stepCount = 0;
 
 	private Map<String, Node> nodeNetwork;
 	private Set<Message> results;
-	
-	public int rate = 1;
-	public static int stepCount = 0;
 
 	public Network() {
 		nodeNetwork = new HashMap<>();
@@ -76,31 +81,15 @@ public class Network {
 	}
 
 	// The Network only supports 1 simulation at a time
-	//public synchronized void simulate(int steps, int sendInterval) {
-	public synchronized void simulate() {
-		
+	public synchronized void simulate(int steps, int sendInterval) {
 		if (nodeNetwork.keySet().size() < 2) {
 			System.out.println("The network is too small for a meaningful simulation");
 			return;
 		}
 
 		results = new HashSet<>();
-
 		
-		
-		step();
-		
-		/*for (int i = 0; i < steps; i++) {
-			if (i % sendInterval == 0) {
-				createNewRandomMessage();
-			}
-			for (Node n : nodeNetwork.values()) {
-				//n.prepairToSend();
-			}
-			for (Node n : nodeNetwork.values()) {
-				n.send();
-			}
-		}*/
+		step();		//step through the simulation according to the user-defined rate
 
 		// sender to (receiver to hop counts)
 		Map<String, Map<String, List<Integer>>> collect = new HashMap<>();
@@ -145,12 +134,10 @@ public class Network {
 		nodeNetwork.get(from).receive(new Message(from, to));
 	}
 
-	public static void main(String args[]) {
-
-		new UI(new Network()).run();
-
+	public Collection<Node> getNodes(){
+		return Collections.unmodifiableCollection(nodeNetwork.values());
 	}
-
+	
 	private double calculateAverage(List<Integer> numbers) {
 		if (numbers.isEmpty()) {
 			return 0.0;
@@ -165,11 +152,8 @@ public class Network {
 	
 	public void step() {
 		
-		stepCount++;
-		
-		if(stepCount == rate) {
+		if((stepCount++)%rate==0) {
 			createNewRandomMessage();
-			stepCount = 0;
 		}
 		
 		for (Node n : nodeNetwork.values()) {
@@ -177,4 +161,10 @@ public class Network {
 		}
 	}
 
+
+	public static void main(String args[]) {
+
+		new UI(new Network()).run();
+
+	}
 }

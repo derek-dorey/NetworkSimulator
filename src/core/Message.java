@@ -1,3 +1,4 @@
+package core;
 /**
  * Makes a print statement for the user that displays the start and destination
  * of the message with the average hops.
