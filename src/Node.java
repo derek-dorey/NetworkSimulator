@@ -1,8 +1,8 @@
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,15 +16,16 @@ public class Node {
 
 	private final String id;
 	private final Set<Node> neighbours;
-	private Collection<Message> buffer1;// new this cycle
-	private Collection<Message> buffer2;// to be sent this cycle
+	
+	//This is a LinkedList because it is both a list and a queue
+	private LinkedList<Message> buffer;	
+	
 	private final Network network;
-
+	
 	public Node(Network network, String nodeID) {
 		id = nodeID;
 		neighbours = new HashSet<>();
-		buffer1 = new ArrayList<>();
-		buffer2 = new ArrayList<>();
+		buffer = new LinkedList<>();
 		this.network = network;
 	}
 
@@ -32,17 +33,13 @@ public class Node {
 		if (m.destination.equals(id)) {
 			network.record(m);
 		} else {
-			buffer1.add(m);
+			buffer.add(m);
 		}
 	}
 
-	public void prepairToSend() {
-		buffer2 = buffer1;
-		buffer1 = new ArrayList<>();
-	}
-
 	public void send() {
-		for (Message m : buffer2) {
+		Message m = buffer.getFirst(); 
+		if(m != null) {
 			m.incHops();
 			send(m);
 		}
@@ -76,5 +73,9 @@ public class Node {
 
 	public String getID() {
 		return id;
+	}
+	
+	public List<Message> getBufferContents(){
+		return Collections.unmodifiableList(buffer);
 	}
 }
