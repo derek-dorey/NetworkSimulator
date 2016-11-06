@@ -10,6 +10,8 @@ import java.util.Arrays;
  * 
  * @author Benjamin Tobalt
  */
+
+
 public class UI {
 
 	private Network network;
@@ -91,7 +93,16 @@ public class UI {
 					System.out.println("This is not valid syntax, please use:");
 					help(new String[] { s[0] });
 				}
-
+				
+			} else if ("rate".equalsIgnoreCase(s[0])) {
+				if (s.length > 1) {
+					network.rate = Integer.parseInt(s[1]);
+					System.out.println(network.rate);
+				} else {
+					System.out.println("This is not valid syntax, please use:");
+					help(new String[] { s[0] });
+				}	
+				
 				//quit command
 			} else if ("quit".equalsIgnoreCase(s[0])) {
 

@@ -16,6 +16,9 @@ public class Network {
 
 	private Map<String, Node> nodeNetwork;
 	private Set<Message> results;
+	
+	public int rate = 1;
+	public static int stepCount = 0;
 
 	public Network() {
 		nodeNetwork = new HashMap<>();
@@ -83,7 +86,7 @@ public class Network {
 
 		results = new HashSet<>();
 
-		// This is the simulation loop
+		
 		
 		step();
 		
@@ -162,8 +165,14 @@ public class Network {
 	
 	public void step() {
 		
-		for (Node n : nodeNetwork.values()) {
+		stepCount++;
+		
+		if(stepCount == rate) {
 			createNewRandomMessage();
+			stepCount = 0;
+		}
+		
+		for (Node n : nodeNetwork.values()) {
 			n.send();
 		}
 	}
