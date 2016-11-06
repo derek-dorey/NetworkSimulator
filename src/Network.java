@@ -73,7 +73,9 @@ public class Network {
 	}
 
 	// The Network only supports 1 simulation at a time
-	public synchronized void simulate(int steps, int sendInterval) {
+	//public synchronized void simulate(int steps, int sendInterval) {
+	public synchronized void simulate() {
+		
 		if (nodeNetwork.keySet().size() < 2) {
 			System.out.println("The network is too small for a meaningful simulation");
 			return;
@@ -82,7 +84,10 @@ public class Network {
 		results = new HashSet<>();
 
 		// This is the simulation loop
-		for (int i = 0; i < steps; i++) {
+		
+		step();
+		
+		/*for (int i = 0; i < steps; i++) {
 			if (i % sendInterval == 0) {
 				createNewRandomMessage();
 			}
@@ -92,7 +97,7 @@ public class Network {
 			for (Node n : nodeNetwork.values()) {
 				n.send();
 			}
-		}
+		}*/
 
 		// sender to (receiver to hop counts)
 		Map<String, Map<String, List<Integer>>> collect = new HashMap<>();
@@ -152,6 +157,14 @@ public class Network {
 				sum += i;
 			}
 			return ((double) sum) / ((double) numbers.size());
+		}
+	}
+	
+	public void step() {
+		
+		for (Node n : nodeNetwork.values()) {
+			createNewRandomMessage();
+			n.send();
 		}
 	}
 

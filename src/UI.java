@@ -84,8 +84,8 @@ public class UI {
 				}
 
 				//simulate command
-			} else if ("simulate".equalsIgnoreCase(s[0])) {
-				if (s.length == 3) {
+			} else if ("step".equalsIgnoreCase(s[0])) {
+				if (s.length == 1) {
 					simulate(Arrays.copyOfRange(s, 1, s.length));
 				} else {
 					System.out.println("This is not valid syntax, please use:");
@@ -150,7 +150,8 @@ public class UI {
 
 	private void simulate(String[] args) {
 		try {
-			network.simulate(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+			//network.simulate(Integer.valueOf(args[0]), Integer.valueOf(args[1]));
+			network.simulate();
 		} catch (NumberFormatException e) {
 			System.out
 					.println("One or more of the arguments that you passed in should have been integers but where not");
