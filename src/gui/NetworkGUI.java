@@ -178,24 +178,6 @@ public class NetworkGUI extends JFrame implements ActionListener {
 		buttonFrame.setVisible(true);
 	}
 	
-	public void createDeleteFrame() {
-		
-		buttonFrame = new JFrame();
-		buttonFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		buttonFrame.setSize(200, 100);
-		buttonFrame.setLocation(650, 400);
-	
-		windowLayout = new SpringLayout();
-	
-		popUpPane = new JPanel();
-		popUpPane.setLayout(windowLayout);
-	
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		textArea.setText("Node Name: ");
-		
-	}
-
 	public JButton getBtnStep() {
 		return btnStep;
 	}
