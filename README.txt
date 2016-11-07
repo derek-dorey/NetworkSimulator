@@ -31,7 +31,7 @@ How to run:
 
 2)A GUI interface will pop up with the following options:
 
-	Step
+	Step (Just press the button to step through simulation)
 
 	New (valid input: "Name" *click create*, you can only create one node at a time)
 
@@ -44,7 +44,18 @@ How to run:
 	Set Rate (valid input: "int" *click set*, Default rate is 1, ie message is created every time
 		step is pressed.)
 
+3) example set up: 
+	1.Create nodes a b c d using new
+	2.Give desiered connections or use *all connect feature*
+	3.Give a desired rate, if not the default rate is 1
+	4.Press step to step through
 
-3) When completed simply click the X in the top right corner of the frame to end the simulation.
+*All connect feature works if you click connect then type in abcd, a will be connected to b
+								   b will be connected to a and c
+								   c will be connected to b and d
+								   d will be connected to c
+similar connections will happen for larger networks								   
+
+4) When completed simply click the X in the top right corner of the frame to end the simulation.
 
 ========================================================================================================
