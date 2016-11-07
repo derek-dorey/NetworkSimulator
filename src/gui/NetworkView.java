@@ -28,10 +28,12 @@ public class NetworkView extends JPanel {
 	};
 	private String[] TABLE_HEADERS = {"Node", "Neighbors", "Buffer"};
 	private final Network network;
+	private final GUIController controller;
 	private JTable table;
 	
-	public NetworkView(Network network) {
+	public NetworkView(Network network, GUIController controller) {
 		this.network = network;
+		this.controller = controller;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
@@ -77,5 +79,9 @@ public class NetworkView extends JPanel {
 					rows.toArray(new String[0][0]),
 					TABLE_HEADERS));
 		}
+	}
+	
+	public Network getNetwork() {
+		return this.network;
 	}
 }

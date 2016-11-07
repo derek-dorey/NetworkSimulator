@@ -161,10 +161,13 @@ public class Network {
 		}
 	}
 
-
 	public static void main(String args[]) {
 
 		new UI(new Network()).run();
 
+	}
+	
+	public void setRate(int rate) {
+		this.rate = rate;
 	}
 }

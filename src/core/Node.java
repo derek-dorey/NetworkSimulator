@@ -39,7 +39,7 @@ public class Node {
 	}
 
 	public void send() {
-		Message m = buffer.getFirst(); 
+		Message m = buffer.poll(); 
 		if(m != null) {
 			m.incHops();
 			send(m);

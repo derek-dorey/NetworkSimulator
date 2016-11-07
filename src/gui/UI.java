@@ -25,6 +25,7 @@ public class UI {
 
 	public void run() {
 
+		GUIController controller = new GUIController(getNetwork());
 		// system scanner
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Type 'help' for options");
@@ -210,5 +211,8 @@ public class UI {
 				help(new String[] {});
 			}
 		}
+	}
+	public Network getNetwork() {
+		return this.network;
 	}
 }
