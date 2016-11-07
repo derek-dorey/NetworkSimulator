@@ -66,10 +66,12 @@ public class Node {
 	public boolean removeNeighbour(Node oldNeighbour) {
 		return neighbours.remove(oldNeighbour);
 	}
+	
 
 	//getters and setters
 	public Set<Node> getNeighbours() {
 		return Collections.unmodifiableSet(neighbours);
+		
 	}
 
 	public String getID() {

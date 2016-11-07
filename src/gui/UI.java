@@ -26,9 +26,20 @@ public class UI {
 	public void run() {
 
 		GUIController controller = new GUIController(getNetwork());
+		
+		
+		/*
+		 * 
+		 * The code below was for Iteration1's console based interface. This has been replace with 
+		 * the GUI interface. 
+		 * 
+		
+		
 		// system scanner
 		Scanner reader = new Scanner(System.in);
 		System.out.println("Type 'help' for options");
+		
+		
 		while (true) {
 
 			// prompt user to enter a command ... this is just to inform user
@@ -210,8 +221,10 @@ public class UI {
 				System.out.println("That is not a valid command\n");
 				help(new String[] {});
 			}
-		}
+		}*/
 	}
+	
+	
 	public Network getNetwork() {
 		return this.network;
 	}

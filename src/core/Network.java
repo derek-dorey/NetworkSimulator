@@ -29,6 +29,12 @@ public class Network {
 		nodeNetwork = new HashMap<>();
 	}
 
+	/**
+	 * creates a node within the network with the string which was
+	 * taken in as an argument 
+	 * @author 
+	 *
+	 */
 	public boolean create(String id) {
 		if (nodeNetwork.containsKey(id)) {
 			return false;
@@ -37,7 +43,54 @@ public class Network {
 		nodeNetwork.put(id, new Node(this, id));
 		return true;
 	}
+	
+	/**
+	 * returns true if it has the node with the string identifier entered
+	 * For testing purposes
+	 * @author 
+	 */
+	public boolean hasNode(String id){
+		if (nodeNetwork.containsKey(id)) {
+			return true;
+		}
+		return false;
+		
+	}
+	
+	/**
+	 * returns the rate
+	 */
+	public int getRate(){
+		
+		return this.rate;
+	}
+	
+	
+	/**
+	 * returns true if the node ID's entered are neighbors
+	 * For testing connect and disconnect
+	 */
+	public boolean hasConnection(String a, String b){
+		
+		//parse through the neighbors of node (String a)
+		for(Node c :nodeNetwork.get(a).getNeighbours()){
+			
+			//check if any of the neighbors id is (string b)
+			if(c.getID() == b){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
+		
+	}
+	
 
+	/**
+	 * removes the node with the same id 
+	 *
+	 */
 	public boolean remove(String id) {
 		if (!nodeNetwork.containsKey(id)) {
 			return false;
@@ -51,7 +104,11 @@ public class Network {
 		return true;
 	}
 
-	//connects two nodes with given names
+	
+	/**
+	 * connects the two nodes with the id's enter if they exist 
+	 *
+	 */
 	public boolean connect(String a, String b) {
 		if (a.equals(b)) {
 			return false;
@@ -65,7 +122,13 @@ public class Network {
 		}
 	}
 	
-	//disconnects two nodes with given names
+	
+	
+	
+	/**
+	 * disconnects the two nodes with the id's enter if they exist 
+	 *
+	 */
 	public boolean disconnect(String a, String b) {
 		if (nodeNetwork.containsKey(a) && nodeNetwork.containsKey(b)) {
 			boolean outa = nodeNetwork.get(a).removeNeighbour(nodeNetwork.get(b));
@@ -75,6 +138,9 @@ public class Network {
 			return false;
 		}
 	}
+	
+	
+	
 
 	public void record(Message m) {
 		results.add(m);
@@ -170,4 +236,7 @@ public class Network {
 	public void setRate(int rate) {
 		this.rate = rate;
 	}
+	
+	
+	
 }
