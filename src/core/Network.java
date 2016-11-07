@@ -122,9 +122,6 @@ public class Network {
 		}
 	}
 	
-	
-	
-	
 	/**
 	 * disconnects the two nodes with the id's enter if they exist 
 	 *

@@ -1,6 +1,7 @@
 package unit_testing;
 
 import junit.framework.TestCase;
+import core.Message;
 import core.Network;
 import core.Node;
 
@@ -16,15 +17,18 @@ public class TestNode extends TestCase
 	Node nodeB = new Node(network, "NodeB");
 	Node nodeC = new Node(network, "NodeC");
 	
-	public void testReceive()
+	public void testReceiveAndSend()
 	{
+		Message msg = new Message("NodeA", "NodeB");
+		nodeA.addNeighbour(nodeB);
 		
+		nodeA.send();
+		for(Message m :nodeB.getBufferContents())
+			{
+			assertEquals(msg, m);
+			}
 	}
 	
-	public void testSend()
-	{
-		
-	}
 	
 	public void testAddNeighbour()
 	{

@@ -10,59 +10,41 @@ Members:Denis Atikpladza		100938122
 
 Introduction:
 
-Network simulator that simulates the performance of the random routing algorithm. 
+Network simulator that simulates the performance of the random routing algorithm with a 
+graphic user interface(GUI) that will allow the user to create a network through the GUI. 
 
-Currently we have implemented the random algorithumn; when a router receives a message, it forwards it 
+Currently we have implemented the random algorithm; when a router receives a message, it forwards it 
 to a random neighbour. 
 
-After this operation is complete the program will print where the message was sent from, were it
-arrived and what the average number of hops was.
+In a later development we will implement the flooding, shortest path, and another local method 
+that we will decide on in a later development. 
 
+After this operation is complete the program will 
+
+For this iteration our design decisions are:
 
 ======================================================================================================
 
 How to run:
 
-1)build the project and run
+1)build the project and run from Network class
 
-2)You will be prompted to enter a command. The valid commands are listed below:
-	
-	create 		(ie create A B C)
-	connect 	(ie connect A B)
-	disconnect 	(ie disconnect A B)
-	remove 		(ie remove B [This will remove the node and it's connections])
-	simulate 	(ie simulate 1000 10 simulates 1000 cycles and sends a message every 10 simulation cycles)
-	quit 
-	help 
+2)A GUI interface will pop up with the following options:
 
-	If you forget the commands the help command will list the possible commands and show the
-	proper syntax for those commands. 
-	
-	Typing 'help [command]' will give a brief description of
-	the commands function and also provide the syntax for that command. 
+	Step
 
-	An example of how to implement a very simple network design is shown below:
+	New (valid input: "Name" *click create*, you can only create one node at a time)
 
-			
-				
-				
-				    e
-			       / \
-			      a---b
-			     /     \
-			    c-------d	
+	Delete (valid input: "Name" *click delete*, you can only delete one node at a time)
+
+	Connect (valid input: "Name Name" *click connect*, must have a space between the two names)
+
+	Disconnect (valid input: "Name Name" *click disconnect*, must have a space between the two names)
+
+	Set Rate (valid input: "int" *click set*, Default rate is 1, ie message is created every time
+		step is pressed.)
 
 
-	create a b c d
-	connect a b
-	connect a c
-	connect c d
-	connect d b
-	create e
-	connect e a
-	connect e b	
-	simulate 5 2 
-
-3)When completed simply type 'quit' to exit the simulation.
+3) When completed simply click the X in the top right corner of the frame to end the simulation.
 
 ========================================================================================================
