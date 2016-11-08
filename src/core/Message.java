@@ -12,10 +12,13 @@ public class Message {
 	public final String start;
 	public final String destination;
 	private int hops = 0;
+	private boolean sent;
+	
 
 	public Message(String start, String destination) {
 		this.start = start;
 		this.destination = destination;
+		this.sent = false;
 	}
 
 	public void incHops() {
@@ -29,6 +32,18 @@ public class Message {
 	@Override
 	public String toString() {
 		return "Message from:'" + start + "' to:'" + destination + "' with:" + hops + " hops";
+	}
+	
+	public boolean getSent() {
+		return this.sent;
+	}
+	
+	public void setNotSent() {
+		this.sent = false;
+	}
+	
+	public void setSent() {
+		this.sent = true;
 	}
 
 }

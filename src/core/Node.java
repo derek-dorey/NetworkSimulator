@@ -40,9 +40,13 @@ public class Node {
 
 	public void send() {
 		Message m = buffer.poll(); 
-		if(m != null) {
+		if(m != null) {		
 			m.incHops();
-			send(m);
+			
+			if(!m.getSent()) { //ensure that each message is only forwarded once per step
+				send(m);
+				m.setSent();
+			}
 		}
 	}
 
@@ -80,5 +84,9 @@ public class Node {
 	
 	public List<Message> getBufferContents(){
 		return Collections.unmodifiableList(buffer);
+	}
+	
+	public Network getNetwork() {
+		return network;
 	}
 }

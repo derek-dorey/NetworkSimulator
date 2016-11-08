@@ -26,6 +26,7 @@ public class Network {
 	private Set<Message> results;
 
 	public Network() {
+		results = new HashSet<>();
 		nodeNetwork = new HashMap<>();
 	}
 
@@ -143,7 +144,13 @@ public class Network {
 	
 
 	public void record(Message m) {
-		results.add(m);
+		try {
+			results.add(m);
+		} catch (NullPointerException e) {
+			System.out.println("invalid call to record");
+			System.out.println(m.toString());
+			System.out.println(results.toString());
+		}
 	}
 
 	// The Network only supports 1 simulation at a time
@@ -153,7 +160,7 @@ public class Network {
 			return;
 		}
 
-		results = new HashSet<>();
+		//results = new HashSet<>();
 		
 		step();		//step through the simulation according to the user-defined rate
 
@@ -193,11 +200,11 @@ public class Network {
 			to = (int) (Math.random() * keys.length);
 		}
 
-		send(keys[from], keys[to]);
+		send(keys[from], keys[to]); //randomly insert a new message into a node's buffer
 	}
 
 	private void send(String from, String to) {
-		nodeNetwork.get(from).receive(new Message(from, to));
+		nodeNetwork.get(from).receive(new Message(from, to)); 
 	}
 
 	public Collection<Node> getNodes(){
@@ -218,12 +225,18 @@ public class Network {
 	
 	public void step() {
 		
-		if((stepCount++)%rate==0) {
+		if((stepCount++)%rate==0) {  //create a new message when the number of calls to step() equals the simulation rate
 			createNewRandomMessage();
 		}
 		
 		for (Node n : nodeNetwork.values()) {
 			n.send();
+		}
+		
+		for (Node n : nodeNetwork.values()) {  //now that the messages have been forwarded, reset their flags for the next call to step()
+			for (Message m : n.getBufferContents()) {
+				m.setNotSent();
+			}
 		}
 	}
 
