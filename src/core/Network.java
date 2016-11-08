@@ -14,7 +14,7 @@ import gui.UI;
  * This class adds connections, removes connections from nodes and runs the simulation.
  * Also implements the random path algorithumn and calculates average number of hops.
  * 
- * @author Griffin Barrett
+ * @author Derek Dorey & Griffin Barrett
  *
  */
 public class Network {

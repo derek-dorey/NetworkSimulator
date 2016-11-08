@@ -150,13 +150,13 @@ public class NetworkGUI extends JFrame implements ActionListener {
 			}
 			
 			else if(e.getSource().equals(getBtnConnect())) {
-				String[] nodes = inputField.getText().split("");
+				String[] nodes = inputField.getText().split("\\s+");
 				getController().connect(nodes);
 				inputField.setText(null);
 			}
 			
 			else if(e.getSource().equals(getBtnDisconnect())) {
-				String[] nodes = inputField.getText().split("");
+				String[] nodes = inputField.getText().split("\\s+");
 				getController().disconnect(nodes);
 				inputField.setText(null);
 			}
