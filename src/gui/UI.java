@@ -223,8 +223,7 @@ public class UI {
 			}
 		}*/
 	}
-	
-	
+		
 	public Network getNetwork() {
 		return this.network;
 	}

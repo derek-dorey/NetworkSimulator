@@ -41,8 +41,7 @@ public class TestNetwork extends TestCase {
 		network.create("nodeB");
 		network.connect("nodeA", "nodeB");
 		assertEquals(true, network.hasConnection("nodeA", "nodeB"));
-		
-		
+			
 	}
 	
 	public void testDisconnect(){
@@ -57,15 +56,9 @@ public class TestNetwork extends TestCase {
 		
 	}
 
-	
 	public static void main(String[] args) {
 		 junit.textui.TestRunner.run(TestNetwork.class);
 
 	}
-	
-	
-	
-	
-	
 	
 }

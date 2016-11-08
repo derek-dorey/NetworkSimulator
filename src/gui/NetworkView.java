@@ -55,9 +55,7 @@ public class NetworkView extends JPanel {
 			TABLE_HEADERS));
 		scrollPane.setViewportView(table);
 	}
-	
-	
-	
+		
 	public void update(){
 		List<Node> nodes = new ArrayList<>(network.getNodes());
 		Collections.sort(nodes, COMP);
