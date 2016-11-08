@@ -16,13 +16,14 @@ public class GUIController {
 		
 	}
 	
+	
 	public void create(String nodeName) {
-		network.create(nodeName);
+		network.createNode(nodeName);
 		view.update();
 	}
 	
 	public void delete(String nodeName) {
-		network.remove(nodeName);
+		network.removeNode(nodeName);
 		view.update();
 	}
 	
@@ -42,10 +43,12 @@ public class GUIController {
 		}
 	}
 	
+	
 	public void setRate(int rate) {
 		network.setRate(rate);
 		view.update();
 	}
+	
 	
 	public void step() {
 		network.step();

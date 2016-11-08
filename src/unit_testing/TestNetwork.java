@@ -14,17 +14,17 @@ public class TestNetwork extends TestCase {
 	
 	
 	public void testCreate(){
-		network.create("nodeA");
-		network.create("nodeB");
+		network.createNode("nodeA");
+		network.createNode("nodeB");
 		assertEquals(network.hasNode("nodeB"),network.hasNode("nodeA"));
 	}
 	
 	
 	public void testRemove()
 	{
-		network.create("nodeA");
-		network.create("nodeB");
-		network.remove("nodeB");
+		network.createNode("nodeA");
+		network.createNode("nodeB");
+		network.removeNode("nodeB");
 		assertNotSame(true,network.hasNode("nodeB"));
 	}
 	
@@ -37,16 +37,16 @@ public class TestNetwork extends TestCase {
 	
 	
 	public void testConnect(){
-		network.create("nodeA");
-		network.create("nodeB");
+		network.createNode("nodeA");
+		network.createNode("nodeB");
 		network.connect("nodeA", "nodeB");
 		assertEquals(true, network.hasConnection("nodeA", "nodeB"));
 			
 	}
 	
 	public void testDisconnect(){
-		network.create("nodeA");
-		network.create("nodeB");
+		network.createNode("nodeA");
+		network.createNode("nodeB");
 		network.disconnect("nodeA", "nodeB");
 		assertEquals(false, network.hasConnection("nodeA", "nodeB"));
 	}

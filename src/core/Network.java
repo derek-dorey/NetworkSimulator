@@ -25,6 +25,9 @@ public class Network {
 	private Map<String, Node> nodeNetwork;
 	private Set<Message> results;
 
+	/**
+	 * Network Constructor
+	 */
 	public Network() {
 		results = new HashSet<>();
 		nodeNetwork = new HashMap<>();
@@ -33,10 +36,9 @@ public class Network {
 	/**
 	 * creates a node within the network with the string which was
 	 * taken in as an argument 
-	 * @author 
-	 *
+	 * @return boolean
 	 */
-	public boolean create(String id) {
+	public boolean createNode(String id) {
 		if (nodeNetwork.containsKey(id)) {
 			return false;
 		}
@@ -48,7 +50,8 @@ public class Network {
 	/**
 	 * returns true if it has the node with the string identifier entered
 	 * For testing purposes
-	 * @author 
+	 * @author Benjamin Tobalt
+	 * @return boolean
 	 */
 	public boolean hasNode(String id){
 		if (nodeNetwork.containsKey(id)) {
@@ -60,6 +63,7 @@ public class Network {
 	
 	/**
 	 * returns the rate
+	 * @return integer value of rate
 	 */
 	public int getRate(){
 		
@@ -70,6 +74,8 @@ public class Network {
 	/**
 	 * returns true if the node ID's entered are neighbors
 	 * For testing connect and disconnect
+	 * @author bentobalt
+	 * @return boolean
 	 */
 	public boolean hasConnection(String a, String b){
 		
@@ -90,9 +96,9 @@ public class Network {
 
 	/**
 	 * removes the node with the same id 
-	 *
+	 * @return boolean
 	 */
-	public boolean remove(String id) {
+	public boolean removeNode(String id) {
 		if (!nodeNetwork.containsKey(id)) {
 			return false;
 		}
@@ -108,6 +114,7 @@ public class Network {
 	
 	/**
 	 * connects the two nodes with the id's enter if they exist 
+	 * @return boolean
 	 *
 	 */
 	public boolean connect(String a, String b) {
@@ -125,6 +132,7 @@ public class Network {
 	
 	/**
 	 * disconnects the two nodes with the id's enter if they exist 
+	 * @return boolean
 	 *
 	 */
 	public boolean disconnect(String a, String b) {
@@ -138,7 +146,10 @@ public class Network {
 	}
 	
 	
-	
+	/**
+	 * Adds the Message to the 'set' holding the messages  
+	 * @param Message 
+	 */
 
 	public void record(Message m) {
 		try {
@@ -150,7 +161,13 @@ public class Network {
 		}
 	}
 
-	// The Network only supports 1 simulation at a time
+	
+	
+	/**
+	 * The Network only supports 1 simulation at a time
+	 * @param steps
+	 * @param sendInterval
+	 */
 	public synchronized void simulate(int steps, int sendInterval) {
 		if (nodeNetwork.keySet().size() < 2) {
 			System.out.println("The network is too small for a meaningful simulation");
@@ -187,6 +204,9 @@ public class Network {
 
 	}
 
+	/**
+	 * randomly inserts a new message into a node's buffer
+	 */
 	private void createNewRandomMessage() {
 		String[] keys = nodeNetwork.keySet().toArray(new String[] {});
 
@@ -200,14 +220,27 @@ public class Network {
 		send(keys[from], keys[to]); //randomly insert a new message into a node's buffer
 	}
 
+	/**
+	 * Creates Message Object
+	 * @param from
+	 * @param to
+	 */
 	private void send(String from, String to) {
 		nodeNetwork.get(from).receive(new Message(from, to)); 
 	}
 
+	/**
+	 * Getter for the nodes of the network
+	 * @return Collection of nodes
+	 */
 	public Collection<Node> getNodes(){
 		return Collections.unmodifiableCollection(nodeNetwork.values());
 	}
 	
+	/**
+	 * Calculates the average hops
+	 * @return average as a Double
+	 */
 	private double calculateAverage(List<Integer> numbers) {
 		if (numbers.isEmpty()) {
 			return 0.0;
@@ -220,6 +253,9 @@ public class Network {
 		}
 	}
 	
+	/**
+	 *Steps through the simulation
+	 */
 	public void step() {
 		
 		if((stepCount++)%rate==0) {  //create a new message when the number of calls to step() equals the simulation rate
@@ -243,6 +279,10 @@ public class Network {
 
 	}
 	
+	/**
+	 * Setter for rate 
+	 * @param rate
+	 */
 	public void setRate(int rate) {
 		this.rate = rate;
 	}
