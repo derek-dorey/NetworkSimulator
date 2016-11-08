@@ -50,11 +50,6 @@ public class TestNetwork extends TestCase {
 		network.disconnect("nodeA", "nodeB");
 		assertEquals(false, network.hasConnection("nodeA", "nodeB"));
 	}
-	
-	//not yet implemented 
-	public void testStep(){
-		
-	}
 
 	public static void main(String[] args) {
 		 junit.textui.TestRunner.run(TestNetwork.class);

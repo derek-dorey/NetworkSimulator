@@ -18,6 +18,12 @@ import core.Message;
 import core.Network;
 import core.Node;
 
+/**
+ * 
+ * @author Griffin Barrett
+ *
+ */
+
 public class NetworkView extends JPanel {
 	private static final long serialVersionUID = -6977255976388251135L;
 	private static final Comparator<Node> COMP = new Comparator<Node>(){
@@ -82,4 +88,5 @@ public class NetworkView extends JPanel {
 	public Network getNetwork() {
 		return this.network;
 	}
+	
 }

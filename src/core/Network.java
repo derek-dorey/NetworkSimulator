@@ -247,6 +247,10 @@ public class Network {
 		this.rate = rate;
 	}
 	
+	public int numberOfNodes() {
+		return nodeNetwork.size();
+	}
+	
 	
 	
 }

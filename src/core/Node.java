@@ -52,9 +52,8 @@ public class Node {
 	public void send() {
 		Message m = buffer.poll(); 
 		if(m != null) {		
-			m.incHops();
-			
 			if(!m.getSent()) { 
+				m.incHops();
 				send(m);
 				m.setSent();
 			}
