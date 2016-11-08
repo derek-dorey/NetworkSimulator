@@ -56,6 +56,8 @@ public class Node {
 				m.incHops();
 				send(m);
 				m.setSent();
+			}else{
+				buffer.addFirst(m);
 			}
 		}
 	}
