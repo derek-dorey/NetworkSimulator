@@ -2,6 +2,12 @@ package gui;
 
 import core.Network;
 
+/**
+ * 
+ * @author Derek Dorey
+ *
+ */
+
 public class GUIController {
 	
 	private final Network network;

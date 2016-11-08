@@ -14,6 +14,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * 
+ * @author  Griffin Barrett & Derek Dorey
+ *
+ */
+
 public class NetworkGUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -6411165349120727909L;
 	
@@ -232,7 +238,9 @@ public class NetworkGUI extends JFrame implements ActionListener {
 		}
 		
 		else if(e.getSource().equals(getBtnStep())) {
-			getController().step();
+			if(getView().getNetwork().numberOfNodes() > 2) {
+				getController().step();
+			}
 		}
 		
 	}
