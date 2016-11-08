@@ -50,6 +50,19 @@ public class TestNetwork extends TestCase {
 		network.disconnect("nodeA", "nodeB");
 		assertEquals(false, network.hasConnection("nodeA", "nodeB"));
 	}
+	
+	/*since all completed transfers are placed in the set result and result is not empty 
+	 *the transfer completed and the step functioned correctly
+	*/
+	public void testStep(){
+		
+		network.createNode("nodeA");
+		network.createNode("nodeB");
+		network.connect("nodeA", "nodeB");
+		network.step();
+		assertEquals(true, !network.emptyResult());
+		
+	}
 
 	public static void main(String[] args) {
 		 junit.textui.TestRunner.run(TestNetwork.class);

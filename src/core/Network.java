@@ -47,6 +47,13 @@ public class Network {
 		return true;
 	}
 	
+	public boolean emptyResult(){
+		if(results.isEmpty()){
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * returns true if it has the node with the string identifier entered
 	 * For testing purposes
@@ -271,6 +278,7 @@ public class Network {
 				m.setNotSent();
 			}
 		}
+		
 	}
 
 	public static void main(String args[]) {
