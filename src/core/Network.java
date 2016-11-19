@@ -1,6 +1,9 @@
 package core;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -14,9 +17,29 @@ import java.util.Set;
  *
  */
 public class Network {
+	private RouterFactory routerFac;
+	private int stepNumber;
+	private int messageCreationPeriod;
+	private RoutingAlgorithm routingAlg;
 	
-	public Network(){
+	//nodeID to node
+	private Map<String,Node> nodes;
+	
+	//source to destination to message ids
+	private Map<String,Map<String,Set<Integer>>> messageIdsBySourceAndDestination;
+	
+	//message id to messages
+	private Map<Integer,Set<Message>> finishedMessages;
+	
+	public Network(RoutingAlgorithm routingAlg){
+		this.routerFac = new RouterFactory();
+		this.stepNumber = 0;
+		this.messageCreationPeriod = 1;
+		this.routingAlg = routingAlg;
 		
+		this.nodes = new HashMap<>();
+		this.messageIdsBySourceAndDestination = new HashMap<>();
+		this.finishedMessages = new HashMap<>();
 	}
 	
 	/**
@@ -25,7 +48,21 @@ public class Network {
 	 * @return false iff the ID is already taken
 	 */
 	public boolean createNode(String id) {
-		return false;
+		if(nodes.containsKey(id)){
+			return false;
+		}else{
+			//put the node into the network
+			nodes.put(id, new Node(id));
+			
+			//create space for message ids with this as a source
+			messageIdsBySourceAndDestination.put(id, new HashMap<>());
+			
+			//create space for message ids with this as a destination
+			for(String source : messageIdsBySourceAndDestination.keySet()){
+				messageIdsBySourceAndDestination.get(source).put(id, new HashSet<>());
+			}
+			return true;
+		}
 	}
 	
 	/**
@@ -34,13 +71,31 @@ public class Network {
 	 * @return true if there was a node with that ID to remove and the removal was completed successfully.
 	 */
 	public boolean destroyNode(String id) {
-		return false;
+		if(!nodes.containsKey(id)){
+			return false;
+		}else{
+			//put the node into the network
+			nodes.remove(id);
+			
+			//remove space for message ids with this as a source
+			messageIdsBySourceAndDestination.remove(id);
+			
+			//remove space for message ids with this as a destination
+			for(String source : messageIdsBySourceAndDestination.keySet()){
+				messageIdsBySourceAndDestination.get(source).remove(id);
+			}
+			return true;
+		}
 	}
 	
 	/**
 	 * calls destroyNode for each node in the network
 	 */
 	public void destroyAllNodes() {
+		//new set to prevent concurrent modification error
+		for(String nodeID : new HashSet<>(nodes.keySet())){
+			destroyNode(nodeID);
+		}
 	}
 	
 	/**
@@ -50,7 +105,13 @@ public class Network {
 	 * @return true iff a new distinct connection was formed successfully.
 	 */
 	public boolean connectNodes(String id1, String id2) {
-		return false;
+		if(nodes.containsKey(id1) && nodes.containsKey(id2)){
+			boolean temp = nodes.get(id1).connectTo(nodes.get(id2));
+			temp = nodes.get(id2).connectTo(nodes.get(id1)) || temp;
+			return temp;
+		}else{
+			return false;
+		}
 	}
 	
 	/**
@@ -60,13 +121,24 @@ public class Network {
 	 * @return true iff the two nodes were connected before, and are no longer connected
 	 */
 	public boolean disconnectNodes(String id1, String id2) {
-		return false;
+		if(nodes.containsKey(id1) && nodes.containsKey(id2)){
+			boolean temp = nodes.get(id1).disconnectFrom(nodes.get(id2));
+			temp = nodes.get(id2).disconnectFrom(nodes.get(id1)) || temp;
+			return temp;
+		}else{
+			return false;
+		}
 	}
 	
 	/**
 	 * calls disconnectNodes on each pair of connected nodes
 	 */
 	public void disconnectAllNodes() {
+		for(String nodeId1 : nodes.keySet()){
+			for(String nodeId2 : nodes.get(nodeId1).getNeighbourIds()){
+				disconnectNodes(nodeId1, nodeId2);
+			}
+		}
 	}
 	
 	/**
