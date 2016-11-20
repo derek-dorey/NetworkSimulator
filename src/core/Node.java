@@ -1,6 +1,7 @@
 package core;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,11 +40,20 @@ public class Node {
 		return neighbours.containsKey(id);
 	}
 	
+	public List<Message> getMessages(){
+		return null;
+	}
+	
 	public Set<String> getNeighbourIds(){
 		return neighbours.keySet();
 	}
 	
 	public String getId(){
 		return id;
+	}
+
+	public void dropBuffer() {
+		// TODO Auto-generated method stub
+		
 	}
 }

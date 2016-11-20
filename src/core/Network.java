@@ -1,5 +1,7 @@
 package core;
 
+import java.rmi.UnexpectedException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,16 +53,13 @@ public class Network {
 		if(nodes.containsKey(id)){
 			return false;
 		}else{
+			Node n = new Node(id);
 			//put the node into the network
-			nodes.put(id, new Node(id));
+			nodes.put(id, n);
 			
-			//create space for message ids with this as a source
-			messageIdsBySourceAndDestination.put(id, new HashMap<>());
+			//give the node a router
+			setRoutingAlgorithm(routingAlg, n);
 			
-			//create space for message ids with this as a destination
-			for(String source : messageIdsBySourceAndDestination.keySet()){
-				messageIdsBySourceAndDestination.get(source).put(id, new HashSet<>());
-			}
 			return true;
 		}
 	}
@@ -144,23 +143,55 @@ public class Network {
 	/**
 	 * get the message ID for all messages in a given node's buffer
 	 * @param nodeId the node who's buffer you want to get
-	 * @return an ordered list of message ids, where element 0 is the one that has been there the longest
+	 * @return an ordered list of message ids, where element 0 is the one that has been there the longest. or null, if the specified node does not exist
 	 */
 	public List<Integer> getMessageBufferFromNode(String nodeId) {
+		if(nodes.containsKey(nodeId)){
+			List<Integer> ids = new ArrayList<>();
+			for(Message m : nodes.get(nodeId).getMessages()){
+				ids.add(m.getId());
+			}
+			return ids;
+		}
 		return null;
 	}
+	
 	/**
-	 * gets a collection of all of the full paths of all messages with the specified ID
+	 * 
+	 * node, this is not a fast operation
+	 * @param messageId the id to check
+	 * @return true iff there are instances of messages with this ID still traveling over the network
+	 */
+	public boolean messageFloating(int messageId){
+		for(Node n : nodes.values()){
+			for(Message m : n.getMessages()){
+				if(m.getId() == messageId){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * gets a collection of all of the full paths of all messages with the specified ID that are NOT floating around the network
 	 * messages that get duplicated have the same id
 	 * if the routing algorithm does not duplicate messages, then this will return a set with size 1
 	 * 
 	 * If there is duplication, than each path will extend all the way back to source node, even if the instance of the message was created somewere else.
 	 * the 0th id will be for the source node. The 1st id will be for the 1st node that the message arrived at and so on. 
 	 * 
-	 * @param messageId the messageID that you are looking for
+	 * @param messageId the messageID of the messages that you are looking for
 	 * @return Set of paths of nodeIDs
 	 */
 	public Set<List<String>> getMessagePathsById(int messageId) {
+		if(finishedMessages.containsKey(Integer.valueOf(messageId))){
+			Set<List<String>> output = new HashSet<>();
+			for(Message m : finishedMessages.get(Integer.valueOf(messageId))){
+				output.add(m.getHistory());
+			}
+			return output;
+		}
 		return null;
 	}
 	
@@ -168,17 +199,19 @@ public class Network {
 	 * @param messageId the id of the message that you want the source of
 	 * @return the node id for the node that the message started at
 	 */
-	public String getMessageSource(int messageId) {
-		return null;
-	}
+	//TODO maybe implement? I don't see a need
+	//public String getMessageSource(int messageId) {
+	//	return null;
+	//}
 	
 	/**
 	 * @param messageId the id of the message that you want the destination of
 	 * @return the node id for the node that the message was ment for
 	 */
-	public String getMessageDestination(int messageId) {
-		return null;
-	}
+	//TODO maybe implement? I don't see a need
+	//public String getMessageDestination(int messageId) {
+	//	return null;
+	//}
 	
 	/**
 	 * changes the routing algorithm used by the network
@@ -188,6 +221,14 @@ public class Network {
 	 * @param alg the new routing algorithm to use
 	 */
 	public void setRoutingAlgorithm(RoutingAlgorithm alg) {
+		clearNetworkHistory();
+		for(Node n : nodes.values()){
+			setRoutingAlgorithm(routingAlg, n);
+		}
+	}
+	
+	private void setRoutingAlgorithm(RoutingAlgorithm alg, Node n) {
+		//TODO IMPLEMENT
 	}
 	
 	/**
@@ -200,6 +241,9 @@ public class Network {
 	 * empty all buffers on all nodes in the network
 	 */
 	public void clearNetworkBuffers() {
+		for(Node n : nodes.values()){
+			n.dropBuffer();
+		}
 	}
 	
 	/**
@@ -207,7 +251,10 @@ public class Network {
 	 * Implicitly calls clearNetworkBuffers()
 	 */
 	public void clearNetworkHistory() {
-		
+		clearNetworkBuffers();
+		finishedMessages = new HashMap<>();
+		messageIdsBySourceAndDestination = new HashMap<>();
+		this.stepNumber = 0;
 	}
 	
 	/**
@@ -218,10 +265,29 @@ public class Network {
 	 * 
 	 * @param sourceId the id of the source node
 	 * @param destinationId the id of the destination node
-	 * @return the average hops that a message takes to get to it's destination
+	 * @return the average hops that a message takes to get to it's destination, or a number <0 if there are no such finished messages
 	 */
 	public double getAverageHops(String sourceId, String destinationId) {
-		return 0;
+		if(messageIdsBySourceAndDestination.containsKey(sourceId) && messageIdsBySourceAndDestination.get(sourceId).containsKey(destinationId)){
+			long runningTotal = 0;
+			int count = 0;
+			Set<Integer> ids = messageIdsBySourceAndDestination.get(sourceId).get(destinationId);
+			for(Integer id : ids){
+				if(finishedMessages.containsKey(id)){
+					for(Message m : finishedMessages.get(id)){
+						if(m.received()){
+							runningTotal += m.hops();
+							count++;
+							break;
+						}
+					}
+				}
+			}
+			if(count > 0){
+				return ((double)runningTotal)/((double)count);
+			}
+		}
+		return -1;
 	}
 	
 	/**
@@ -233,19 +299,54 @@ public class Network {
 	 * @return the average transmissions that a message takes to get to it's destination
 	 */
 	public double getAverageTransmitions(String sourceId, String destinationId) {
-		return 0;
+		if(messageIdsBySourceAndDestination.containsKey(sourceId) && messageIdsBySourceAndDestination.get(sourceId).containsKey(destinationId)){
+			long runningTotal = 0;
+			int count = 0;
+			Set<Integer> ids = messageIdsBySourceAndDestination.get(sourceId).get(destinationId);
+			for(Integer id : ids){
+				if(finishedMessages.containsKey(id) && messageFloating(id)){
+					count++;
+					for(Message m : finishedMessages.get(id)){
+						if(m.received()){
+							runningTotal += m.hops();
+						}
+					}
+				}
+			}
+			if(count > 0){
+				return ((double)runningTotal)/((double)count);
+			}
+		}
+		return -1;
 	}
 	
 	/**
 	 * @return true iff there is at least one path to get from every node to every other node.
 	 */
 	public boolean isAConnectedGraph() {
+		if(!nodes.isEmpty()){
+			Set<String> visited = new HashSet<>();
+			Node origen = nodes.values().iterator().next();
+			visited.add(origen.getId());
+			isAConnectedGraphRecursive(origen, visited);
+			return nodes.keySet().containsAll(visited);
+		}
 		return false;
+	}
+	
+	private void isAConnectedGraphRecursive(Node n, Set<String> visited){
+		for(String id : n.getNeighbourIds()){
+			if(!visited.contains(id)){
+				visited.add(id);
+				isAConnectedGraphRecursive(nodes.get(id), visited);
+			}
+		}
 	}
 	
 	/**
 	 * simulate one cycle
 	 */
 	public void step() {
+		throw new RuntimeException("Not implemented yet");
 	}
 }
