@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import gui.Frame;
+
 /**
  * This class acts as the model. It is the only class that the view or controller should interact with.
  * 
- * This class intentionally implements the modual pattern.
+ * This class intentionally implements the module pattern.
  * This means that none of the classes or other design patterns used are exposed at all.
  * Only constructs available in pure java are used in the public interface, with the exception of the RoutingAlgorithm enum.
  * 
@@ -19,6 +21,7 @@ import java.util.Set;
  *
  */
 public class Network {
+	
 	private RouterFactory routerFac;
 	private int stepNumber;
 	private int messageCreationPeriod;
@@ -138,6 +141,16 @@ public class Network {
 				disconnectNodes(nodeId1, nodeId2);
 			}
 		}
+	}
+	
+	public ArrayList<String> getNodes() {
+		
+		ArrayList<String> returnNodes = new ArrayList<String>();
+		for(String nodeID: nodes.keySet()) {
+			returnNodes.add(nodeID);
+		}
+		
+		return returnNodes;
 	}
 	
 	/**
