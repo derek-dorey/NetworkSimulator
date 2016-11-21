@@ -54,6 +54,7 @@ public class Frame extends JFrame {
 	private JButton btnDelete;
 	private JButton btnConnect;
 	private JButton btnDisconnect;
+	private JButton btnSetRate;
 	protected Object v1;
 	protected Object v2;
 	protected Object parent;
@@ -121,7 +122,7 @@ public class Frame extends JFrame {
 		lblAl.setBounds(695, 5, 111, 14);
 		contentPane.add(lblAl);
 		
-		JButton btnSetRate = new JButton("Set Rate");
+		btnSetRate = new JButton("Set Rate");
 		btnSetRate.setBounds(697, 96, 89, 23);
 		contentPane.add(btnSetRate);
 		
@@ -182,17 +183,31 @@ public class Frame extends JFrame {
 		contentPane.add(lblNetworksBufferOutput);	
 	}
 	
+	/***
+	 * 
+	 * Add the NetworkController reference to the view, and add it as an actionlistener for handling user inputs
+	 */
+	
 	public void addNetworkController(NetworkController c) {
 		this.controller = c;
 		btnNew.addActionListener(controller);
 		btnDelete.addActionListener(controller);
 		btnConnect.addActionListener(controller);
 		btnDisconnect.addActionListener(controller);
+		btnSetRate.addActionListener(controller);
+		textField.setEditable(true);
+		textField.addActionListener(controller);
 	}
 	
 	public void addNetworkModel(Network n) {
 		this.model = n;
 	}
+	
+	/***
+	 * 
+	 * If valid changes are made, update the view to reflect the new state of the model
+	 * 
+	 */
 	
 	public void update(ActionEvent e, String node) {
 		
@@ -236,5 +251,9 @@ public class Frame extends JFrame {
 		     }
 		}
 		
+		else if(e.getActionCommand().equals("Set Rate")) {
+			
+			textField.setText(null);		//clear the input field to reflect the new rate
+		}
 	}
 }
