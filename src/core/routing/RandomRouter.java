@@ -1,6 +1,7 @@
 package core.routing;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import core.Message;
@@ -8,7 +9,7 @@ import core.Node;
 
 public class RandomRouter implements Router {
 
-	final Node n;
+	private final Node n;
 	
 	public RandomRouter(Node n){
 		this.n = n;
@@ -16,7 +17,12 @@ public class RandomRouter implements Router {
 	
 	@Override
 	public Set<String> route(Message m) {
-		return new HashSet<>();
+		Set<String> set = new HashSet<>();
+		int index = (int)(Math.random()*((double)n.getNeighbourIds().size()));
+		Iterator<String> iter = n.getNeighbourIds().iterator();
+		while(index-->0){iter.next();}
+		set.add(iter.next());
+		return set;
 	}
 
 }

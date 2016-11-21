@@ -14,9 +14,9 @@ import core.Node;
  */
 public enum RoutingAlgorithm {
 	RANDOM(RandomRouter.class), 
-	SHORTEST_PATH(RandomRouter.class), 
-	FLOOD(RandomRouter.class), 
-	ADAPTIVE(RandomRouter.class);
+	SHORTEST_PATH(ShortestPathRouter.class), 
+	FLOOD(FloodRouter.class), 
+	ADAPTIVE(AdaptiveRouter.class);
 	
 	private Class<? extends Router> routerClass;
 	
@@ -28,7 +28,7 @@ public enum RoutingAlgorithm {
 		try {
 			return routerClass.getConstructor(Node.class).newInstance(n);
 		} catch (Throwable t) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("The enum is broken");
 		}
 	}
 }
