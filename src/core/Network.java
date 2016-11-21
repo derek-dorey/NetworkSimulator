@@ -1,14 +1,15 @@
 package core;
 
-import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import gui.Frame;
+import core.routing.RoutingAlgorithm;
+
 
 /**
  * This class acts as the model. It is the only class that the view or controller should interact with.
@@ -22,10 +23,10 @@ import gui.Frame;
  */
 public class Network {
 	
-	private RouterFactory routerFac;
 	private int stepNumber;
 	private int messageCreationPeriod;
 	private RoutingAlgorithm routingAlg;
+	private int messageNumber = 0;
 	
 	//nodeID to node
 	private Map<String,Node> nodes;
@@ -37,7 +38,6 @@ public class Network {
 	private Map<Integer,Set<Message>> finishedMessages;
 	
 	public Network(RoutingAlgorithm routingAlg){
-		this.routerFac = new RouterFactory();
 		this.stepNumber = 0;
 		this.messageCreationPeriod = 1;
 		this.routingAlg = routingAlg;
@@ -56,7 +56,7 @@ public class Network {
 		if(nodes.containsKey(id)){
 			return false;
 		}else{
-			Node n = new Node(id);
+			Node n = new Node(id, this);
 			//put the node into the network
 			nodes.put(id, n);
 			
@@ -241,7 +241,7 @@ public class Network {
 	}
 	
 	private void setRoutingAlgorithm(RoutingAlgorithm alg, Node n) {
-		//TODO IMPLEMENT
+		n.setRouter(alg.getRouter(n));
 	}
 	
 	/**
@@ -255,7 +255,7 @@ public class Network {
 	 */
 	public void clearNetworkBuffers() {
 		for(Node n : nodes.values()){
-			n.dropBuffer();
+			n.dropQueue();
 		}
 	}
 	
@@ -268,6 +268,7 @@ public class Network {
 		finishedMessages = new HashMap<>();
 		messageIdsBySourceAndDestination = new HashMap<>();
 		this.stepNumber = 0;
+		this.messageNumber = 0;
 	}
 	
 	/**
@@ -360,6 +361,46 @@ public class Network {
 	 * simulate one cycle
 	 */
 	public void step() {
-		throw new RuntimeException("Not implemented yet");
+		if((stepNumber++)%messageCreationPeriod == 0 && nodes.size()>=2){
+			String sender = randomElement(nodes.keySet());
+			String dest = sender;
+			while(sender.equals(dest = randomElement(nodes.keySet()))){}
+			Message m = new Message(messageNumber++, sender, dest);
+			nodes.get(sender).receiveMessage(m);
+		}
+		for(Node n : nodes.values()){
+			n.sendMessage();
+		}
+		for(Node n : nodes.values()){
+			n.flushBuffer();
+		}
 	}
+	private String randomElement(Set<String> set){
+		int i = (int)(Math.random()*((double)set.size()));
+		Iterator<String> iter = set.iterator();
+		while(i-->0){
+			iter.next();
+		}
+		return iter.next();
+	}
+	
+	/**
+	 * @param  the message that has finished it's trek
+	 * 
+	 */
+	protected void finalizeMessage(Message m){
+		if(!finishedMessages.containsKey(m.getId())){
+			finishedMessages.put(m.getId(), new HashSet<>());
+		}
+		finishedMessages.get(m.getId()).add(m);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
