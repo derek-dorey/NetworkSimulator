@@ -180,7 +180,7 @@ public class Frame extends JFrame {
 		        try {
 				
 		        	graph.removeCells(new Object[]{v2});
-					
+		       
 		        } finally {
 		            graph.getModel().endUpdate();
 		        }
