@@ -24,7 +24,8 @@ when a a message is recieved it forwards the message to all of its neighbors exc
 it came from. 
 
 Shortest path algorithm:
-
+the routing tables are configured globally to deliver messages using the least
+amount of intermediate nodes (a.k.a hops).
 
 Local algorithm:
 ???
