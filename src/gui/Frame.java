@@ -55,6 +55,11 @@ public class Frame extends JFrame {
 	private JButton btnConnect;
 	private JButton btnDisconnect;
 	private JButton btnSetRate;
+	private JRadioButton rdbtnFlooding;
+	private JRadioButton rdbtnRandom;
+	private JRadioButton rdbtnFastest;
+	private JRadioButton rdbtnLocal;
+	
 	protected Object v1;
 	protected Object v2;
 	protected Object parent;
@@ -87,16 +92,19 @@ public class Frame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JRadioButton rdbtnFlooding = new JRadioButton("Flooding");
+		rdbtnFlooding = new JRadioButton("Flooding");
 		rdbtnFlooding.setBounds(697, 26, 109, 23);
 		
-		JRadioButton rdbtnRandom = new JRadioButton("Random",true);
+		rdbtnRandom = new JRadioButton("Random",true);
 		rdbtnRandom.setBounds(808, 26, 109, 23);
 		
-		JRadioButton rdbtnFastest = new JRadioButton("Fastest Route");
+		//random routing algorithm is the default configuration
+		rdbtnRandom.setSelected(true);
+		
+		rdbtnFastest = new JRadioButton("Fastest Route");
 		rdbtnFastest.setBounds(697, 52, 109, 23);
 		
-		JRadioButton rdbtnLocal = new JRadioButton("Local");
+		rdbtnLocal = new JRadioButton("Local");
 		rdbtnLocal.setBounds(808, 52, 109, 23);
 		
 		ButtonGroup bg = new ButtonGroup();
@@ -186,6 +194,7 @@ public class Frame extends JFrame {
 	/***
 	 * 
 	 * Add the NetworkController reference to the view, and add it as an actionlistener for handling user inputs
+	 * Add the radioButtonListener to the view's radio buttons
 	 */
 	
 	public void addNetworkController(NetworkController c) {
@@ -197,6 +206,10 @@ public class Frame extends JFrame {
 		btnSetRate.addActionListener(controller);
 		textField.setEditable(true);
 		textField.addActionListener(controller);
+		rdbtnFlooding.addActionListener(controller.radioButtonListener);
+		rdbtnRandom.addActionListener(controller.radioButtonListener);
+		rdbtnFastest.addActionListener(controller.radioButtonListener);
+		rdbtnLocal.addActionListener(controller.radioButtonListener);
 	}
 	
 	public void addNetworkModel(Network n) {

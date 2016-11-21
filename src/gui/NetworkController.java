@@ -20,6 +20,7 @@ public class NetworkController implements ActionListener {
 
 	private static Network model;
 	private static Frame view;
+	protected static ActionListener radioButtonListener; 
 	
 	public NetworkController(Network m, Frame v) {
 		model = m;
@@ -28,13 +29,39 @@ public class NetworkController implements ActionListener {
 	
 	public static void main(String[] args) {
 		
+		//instantiate the model with default set to random routing algorithm
 		model = new Network(RoutingAlgorithm.RANDOM);
+		
+		//instantiate the view
 		view = new Frame();
+		
+		//instantiate the controller with references to the model and the view
 		NetworkController controller = new NetworkController(model, view);
+		
 		view.addNetworkController(controller);
 		view.addNetworkModel(model);
 		view.setVisible(true);
 		
+		//set the routing algorithm according to the user's selection
+		radioButtonListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(e.getActionCommand().equals("Flooding")) {
+						model.setRoutingAlgorithm(RoutingAlgorithm.FLOOD);
+					}
+					
+					else if(e.getActionCommand().equals("Random")) {
+						model.setRoutingAlgorithm(RoutingAlgorithm.RANDOM);
+					}
+					
+					else if(e.getActionCommand().equals("Fastest Route")) {
+						model.setRoutingAlgorithm(RoutingAlgorithm.SHORTEST_PATH);
+					}
+					
+					else if(e.getActionCommand().equals("Local")) {
+						model.setRoutingAlgorithm(RoutingAlgorithm.ADAPTIVE);
+					}
+				}
+			};
 	}
 	
 	/***
@@ -50,6 +77,11 @@ public class NetworkController implements ActionListener {
 			
 			name = JOptionPane.showInputDialog(null, "Node ID:", null, JOptionPane.PLAIN_MESSAGE);
         	
+			if(model.getNodes().contains(name)) {  //check to see if the node exists
+				JOptionPane.showMessageDialog(view, "The node you are trying to create already exists.");
+				return;
+			}
+			
         	//input check for empty entry and all spaces
         	if(!name.isEmpty() && !name.trim().isEmpty()){
         		
@@ -78,30 +110,41 @@ public class NetworkController implements ActionListener {
 		
 		else if(e.getActionCommand().equals("Connect")) {
 			
-			view.parent = view.getGraph().getDefaultParent();
-			view.v1 = view.getM().get(JOptionPane.showInputDialog(null,"Node 1:", null, JOptionPane.PLAIN_MESSAGE));
-	        view.v2 = view.getM().get(JOptionPane.showInputDialog(null,"Node 2:", null, JOptionPane.PLAIN_MESSAGE));
+			boolean result;
+			
+			String v1 = JOptionPane.showInputDialog(null,"Node 1:", null, JOptionPane.PLAIN_MESSAGE);
+			String v2 = JOptionPane.showInputDialog(null,"Node 2:", null, JOptionPane.PLAIN_MESSAGE);
+			
+			view.v1 = view.getM().get(v1);
+			view.v2 = view.getM().get(v2);
+			
+	        result = model.connectNodes(v1, v2);	//connect the two nodes in the model
 	        
-	        if(!(model.getNodes().contains(view.v1.toString()) && model.getNodes().contains(view.v2.toString()))) { //check whether both nodes exist in the model
-	        	JOptionPane.showMessageDialog(view, "One or both of the nodes do not exist. Please ensure that you are connecting existing nodes");
-	        	return;				//one or more invalid inputs, don't update the model or the view
+	        if(result) {
+	        	view.update(e, null);	//update the view
 	        }
 	        
-	        model.connectNodes(view.v1.toString(), view.v2.toString());	//connect the two nodes in the model
-	        view.update(e, null);	//update the view
+	        else {
+	        	JOptionPane.showMessageDialog(view, "One or both of the nodes do not exist. Please ensure that you are disconnecting existing nodes");
+	        	return;				//one or more invalid inputs, don't update the model or the view
+	        }
+	       
 		}
 		
 		else if(e.getActionCommand().equals("Disconnect")) {
 			
-			view.v1 = view.getM().get(JOptionPane.showInputDialog(null,"Node 1:", null, JOptionPane.PLAIN_MESSAGE));
-	        view.v2 = view.getM().get(JOptionPane.showInputDialog(null,"Node 2:", null, JOptionPane.PLAIN_MESSAGE));
+			String v1 = JOptionPane.showInputDialog(null,"Node 1:", null, JOptionPane.PLAIN_MESSAGE);
+			String v2 = JOptionPane.showInputDialog(null,"Node 2:", null, JOptionPane.PLAIN_MESSAGE);
+			
+			view.v1 = view.getM().get(v1);
+			view.v2 = view.getM().get(v2);
 	        
-	        if(!(model.getNodes().contains(view.v1.toString()) && model.getNodes().contains(view.v2.toString()))) { //check whether both nodes exist in the model
+	        if(!(model.getNodes().contains(v1) && model.getNodes().contains(v2))) { //check whether both nodes exist in the model
 	        	JOptionPane.showMessageDialog(view, "One or both of the nodes do not exist. Please ensure that you are disconnecting existing nodes");
 	        	return;				//one or more invalid inputs, don't update the model or the view
 	        }
 	        
-	        model.disconnectNodes(view.v1.toString(), view.v2.toString());	//disconnect the two nodes in the model
+	        model.disconnectNodes(v1,v2);	//disconnect the two nodes in the model
 	        view.update(e, null);	//update the view	
 		}
 		
