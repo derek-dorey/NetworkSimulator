@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 import core.Network;
-import core.RoutingAlgorithm;
+import core.routing.RoutingAlgorithm;
 
 public class NetworkController implements ActionListener {
 
