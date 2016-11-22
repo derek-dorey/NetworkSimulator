@@ -395,12 +395,4 @@ public class Network {
 		finishedMessages.get(m.getId()).add(m);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
 }
