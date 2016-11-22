@@ -274,7 +274,6 @@ public class Network {
 		finishedMessages = new HashMap<>();
 		messageIdsBySourceAndDestination = new HashMap<>();
 		this.stepNumber = 0;
-		this.messageNumber = 0;
 	}
 	
 	/**
@@ -399,6 +398,8 @@ public class Network {
 			finishedMessages.put(m.getId(), new HashSet<>());
 		}
 		finishedMessages.get(m.getId()).add(m);
+		System.out.println("From:"+m.getSender()+" to:"+m.getDestination()+" av. hops:"+this.getAverageHops(m.getSender(), m.getDestination()));
+		System.out.println("From:"+m.getSender()+" to:"+m.getDestination()+" av. transmitions:"+this.getAverageTransmitions(m.getSender(), m.getDestination()));
 	}
 	
 }

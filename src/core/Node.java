@@ -26,6 +26,8 @@ public class Node {
 	private LinkedList<Message> queue;
 	private Set<Message> buffer;
 	
+	private Set<Integer> acceptedMessages = new HashSet<>();
+	
 	private Router router;
 	
 	/**
@@ -39,11 +41,7 @@ public class Node {
 		this.network = network;
 		neighbours = new HashMap<>();
 		buffer = new HashSet<>();
-<<<<<<< HEAD
-		
-=======
 		queue = new LinkedList<>();
->>>>>>> branch 'TheGreatRefactor' of https://github.com/SYSC3110/project-bitsplease.git
 	}
 	
 	/**
@@ -172,10 +170,11 @@ public class Node {
 	public void receiveMessage(Message m){
 		if(m.getDestination().equals(this.getId())){
 			m.recordNode(getId());
-			m.setReceived(true);
+			m.setReceived(acceptedMessages.add(m.getId()));
 			network.finalizeMessage(m);
+		}else{
+			buffer.add(m);
 		}
-		buffer.add(m);
 	}
 	
 	/**

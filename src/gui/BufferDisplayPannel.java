@@ -53,7 +53,6 @@ public class BufferDisplayPannel extends JPanel {
 		
 		DefaultListModel<String> mod = new DefaultListModel<String>();
 		for(String id : nodes){
-			System.out.println(id);
 			String messages = Arrays.toString(net.getMessageBufferFromNode(id).toArray());
 			StringBuilder sb = new StringBuilder();
 			sb.append(id);
