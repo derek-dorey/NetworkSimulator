@@ -39,6 +39,7 @@ public class Node {
 		this.network = network;
 		neighbours = new HashMap<>();
 		buffer = new HashSet<>();
+		queue = new LinkedList<>();
 	}
 	
 	/**
@@ -100,7 +101,7 @@ public class Node {
 	}
 	
 	public List<Message> getMessages(){
-		return null;
+		return new ArrayList<>(queue);
 	}
 	
 	/**

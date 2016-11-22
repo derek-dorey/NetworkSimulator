@@ -1,7 +1,6 @@
 package testing;
 
 import core.Network;
-import core.Node;
 import core.routing.RoutingAlgorithm;
 import junit.framework.TestCase;
 
@@ -77,17 +76,20 @@ public class NetworkTests extends TestCase
 		network.createNode("nodeB");
 		network.createNode("nodeC");
 		network.disconnectAllNodes();
-		assertEquals(true,network.isAConnectedGraph());
+		assertFalse(network.isAConnectedGraph());
 	}
 	
 	public void teststep()
 	{
 		network.createNode("nodeA");
 		network.createNode("nodeB");
-		network.createNode("nodeC");
 		network.connectNodes("nodeA", "nodeB");
+		
 		network.step();
 		
+		assert(network.getMessageBufferFromNode("nodeA") != null);
+		
+		assert(network.getMessageBufferFromNode("nodeB") != null);
 		
 	}
 	
