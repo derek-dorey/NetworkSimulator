@@ -50,7 +50,10 @@ algorithm avoids infinite loops by not allowing a message to re-enter the same p
 The random algorithm has stayed the same since the last iterations it still uses a randomly generated number to determine which 
 neighbor the message will be sent to next.
 
-More test cases were provided to test the added added code. The 
+More test cases were provided to test the added added code. 
+
+***The Network has the implimentations and calculations of the metrics but the GUI does not display them, we could not put
+them into the GUI in time.***
 
 ===========================================================================================================================
 
