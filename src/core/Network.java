@@ -248,6 +248,12 @@ public class Network {
 	 * @param period the quantity of cycles between creating a message and creating the next.
 	 */
 	public void setMessageCreationPeriod(int period) {
+		if(period > 0){
+			this.messageCreationPeriod = period;  
+		}else{
+			period = 1;
+		}
+		
 	}
 	
 	/**

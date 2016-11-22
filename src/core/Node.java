@@ -39,7 +39,11 @@ public class Node {
 		this.network = network;
 		neighbours = new HashMap<>();
 		buffer = new HashSet<>();
+<<<<<<< HEAD
 		
+=======
+		queue = new LinkedList<>();
+>>>>>>> branch 'TheGreatRefactor' of https://github.com/SYSC3110/project-bitsplease.git
 	}
 	
 	/**
@@ -101,7 +105,7 @@ public class Node {
 	}
 	
 	public List<Message> getMessages(){
-		return null;
+		return new ArrayList<>(queue);
 	}
 	
 	/**
