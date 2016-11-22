@@ -34,7 +34,6 @@ public class NetworkController implements ActionListener {
 		
 		//instantiate the view
 		view = new Frame();
-		
 		//instantiate the controller with references to the model and the view
 		NetworkController controller = new NetworkController(model, view);
 		
@@ -170,7 +169,7 @@ public class NetworkController implements ActionListener {
 		}
 		
 		else if(e.getActionCommand().equals("Step")) {
-			view.txt.setText("hey");
+			model.step();
 			view.update(e,null);
 		}
 	}

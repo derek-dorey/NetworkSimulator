@@ -39,6 +39,7 @@ public class Node {
 		this.network = network;
 		neighbours = new HashMap<>();
 		buffer = new HashSet<>();
+		
 	}
 	
 	/**

@@ -66,6 +66,8 @@ public class Frame extends JFrame {
 	protected Object v1;
 	protected Object v2;
 	protected Object parent;
+	private BufferDisplayPannel bufferDisplay;
+	private JButton btnStep;
 	
 	public HashMap getM() {
 		return m;
@@ -82,8 +84,7 @@ public class Frame extends JFrame {
 	 *
 	 */
 	public Frame() {
-		
-		super("BitsPlease Network Simulator ");
+		super("BitsPlease Network Simulator");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 500);
 		setResizable(false);
@@ -163,33 +164,10 @@ public class Frame extends JFrame {
 		btnDisconnect.setBounds(301, 396, 100, 23);
 		contentPane.add(btnDisconnect);
 		
-		JButton btnStep = new JButton("Step");
+		btnStep = new JButton("Step");
 		btnStep.setBounds(411, 396, 89, 23);
 		contentPane.add(btnStep);
 		
-		/*
-		 * Iteration 4: Components
-		 *
-		JButton btnStepBack = new JButton("Back Step");
-		btnStepBack.setBounds(511, 396, 100, 23);
-		contentPane.add(btnStepBack);
-		
-		JButton btnSave = new JButton("Save Network as XML");
-		btnSave.setBounds(301, 430, 311, 23);
-		contentPane.add(btnSave);
-		
-		JButton btnImport = new JButton("Import XML File");
-		btnImport.setBounds(5, 430, 286, 23);
-		contentPane.add(btnImport);
-		*/
-		
-		
-		JTextArea txt = new JTextArea();
-		txt.setEditable(false); 
-		
-		JScrollPane sp = new JScrollPane(txt);
-		sp.setBounds(697, 163, 277, 290);
-		contentPane.add(sp);
         		
 		JLabel lblNetworksBufferOutput = new JLabel("Networks Buffer Output:");
 		lblNetworksBufferOutput.setBounds(697, 140, 141, 14);
@@ -209,6 +187,7 @@ public class Frame extends JFrame {
 		btnConnect.addActionListener(controller);
 		btnDisconnect.addActionListener(controller);
 		btnSetRate.addActionListener(controller);
+		btnStep.addActionListener(controller);
 		textField.setEditable(true);
 		textField.addActionListener(controller);
 		rdbtnFlooding.addActionListener(controller.radioButtonListener);
@@ -221,6 +200,9 @@ public class Frame extends JFrame {
 	
 	public void addNetworkModel(Network n) {
 		this.model = n;
+		bufferDisplay = new BufferDisplayPannel(model);
+		bufferDisplay.setBounds(697, 163, 277, 290);
+		contentPane.add(bufferDisplay);
 	}
 	
 	/***
@@ -283,7 +265,15 @@ public class Frame extends JFrame {
 		else if(e.getActionCommand().equals("Set Rate")) {
 			
 			textField.setText(null);		//clear the input field to reflect the new rate
-		} 
+		} else if (e.getActionCommand().equals("Step")) {
+			getBufferDisplay().update();
+		}
 		
+	}
+	public BufferDisplayPannel getBufferDisplay() {
+		return bufferDisplay;
+	}
+	public JButton getBtnStep() {
+		return btnStep;
 	}
 }

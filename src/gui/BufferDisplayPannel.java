@@ -38,7 +38,6 @@ public class BufferDisplayPannel extends JPanel {
 	
 	public void update(){
 		List<String> nodes = net.getNodes();
-		list.setVisibleRowCount(nodes.size());
 		if(nodes.isEmpty()){
 			list.setModel(new DefaultListModel<String>());
 			return;
@@ -54,6 +53,7 @@ public class BufferDisplayPannel extends JPanel {
 		
 		DefaultListModel<String> mod = new DefaultListModel<String>();
 		for(String id : nodes){
+			System.out.println(id);
 			String messages = Arrays.toString(net.getMessageBufferFromNode(id).toArray());
 			StringBuilder sb = new StringBuilder();
 			sb.append(id);
@@ -66,6 +66,7 @@ public class BufferDisplayPannel extends JPanel {
 			mod.addElement(sb.toString());
 		}
 		list.setModel(mod);
+		list.setVisibleRowCount(nodes.size());
 	}
 	
 	

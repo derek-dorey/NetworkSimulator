@@ -159,14 +159,14 @@ public class Network {
 	 * @return an ordered list of message ids, where element 0 is the one that has been there the longest. or null, if the specified node does not exist
 	 */
 	public List<Integer> getMessageBufferFromNode(String nodeId) {
-		if(nodes.containsKey(nodeId)){
+		if(nodes.get(nodeId) != null){
 			List<Integer> ids = new ArrayList<>();
 			for(Message m : nodes.get(nodeId).getMessages()){
 				ids.add(m.getId());
 			}
 			return ids;
 		}
-		return null;
+		return new ArrayList<>();
 	}
 	
 	/**
