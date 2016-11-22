@@ -2,10 +2,21 @@ package core.routing;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import core.Message;
 import core.Node;
 
+/**
+ * This class is the Shortest path algorithm that is suppose to be implemented
+ * 
+ * This algorithm will get the message for the starting point to the ending
+ * point in the shortest amount of hops
+ * 
+ * It does this by first going through the network and finding a path with the least
+ * hops by comparing it to every possible path from the starting point to the end
+ * 
+ * @author Griffin
+ *
+ */
 public class ShortestPathRouter implements Router {
 
 	private final Node node;
@@ -37,6 +48,16 @@ public class ShortestPathRouter implements Router {
 		return out;
 	}
 
+	/**
+	 * Method that checks the number of hops from start to destination
+	 * 
+	 * @param n
+	 * @param destId
+	 * @param hops
+	 * 
+	 * @return true if destination is start and if there is a valid path from start to end
+	 * @return false if if statements are missed (meaning valid path does not exist)
+	 */
 	private boolean isNumberOfHopsToDest(Node n, String destId, int hops) {
 		if (hops == 0) {
 			return n.getId().equals(destId);

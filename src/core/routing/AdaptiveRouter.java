@@ -10,6 +10,17 @@ import java.util.Set;
 import core.Message;
 import core.Node;
 
+/**
+ * This class is the custom algorithm that we are suppose to implement
+ * 
+ * This algorithm is "random" however it records where it has been before
+ * and will not go back there unless it absolutely has to get to it's target
+ * 
+ * This algorithm also "learns" about the network it is in and gets better over time 
+ * 
+ * @author Griffin
+ *
+ */
 public class AdaptiveRouter implements Router {
 
 	private final Node node;

@@ -10,6 +10,14 @@ import java.util.Set;
 
 import core.routing.Router;
 
+/**
+ * This class adds connections, removes connections from nodes, 
+ * sends messages between nodes, and runs the simulation.
+ * 
+ * 
+ * @author Derek Dorey & Griffin Barrett
+ *
+ */
 public class Node {
 	private final String id;
 	private final Network network;
@@ -20,6 +28,12 @@ public class Node {
 	
 	private Router router;
 	
+	/**
+	 * constructor for node object
+	 * 
+	 * @param id
+	 * @param network
+	 */
 	public Node(String id, Network network) {
 		this.id = id;
 		this.network = network;
@@ -27,6 +41,14 @@ public class Node {
 		buffer = new HashSet<>();
 	}
 	
+	/**
+	 * checks if the two new neighbours are connected
+	 * 
+	 * @param newNeighbour
+	 * 
+	 * @return false if not
+	 * @return true if they are
+	 */
 	public boolean connectTo(Node newNeighbour){
 		if(neighbours.containsKey(newNeighbour.getId())){
 			return false;
@@ -36,6 +58,14 @@ public class Node {
 		}
 	}
 	
+	/**
+	 * checks if the two former neighbours are disconnected
+	 * 
+	 * @param exNeighbour
+	 * 
+	 * @return false if not
+	 * @return true if they are
+	 */
 	public boolean disconnectFrom(Node exNeighbour){
 		if(!neighbours.containsKey(exNeighbour.getId())){
 			return false;
@@ -45,10 +75,26 @@ public class Node {
 		}
 	}
 	
+	/**
+	 * checks if specific node is a neighbour of a node
+	 * 
+	 * @param n
+	 * 
+	 * @return true if they are
+	 * @return false if not
+	 */
 	public boolean isNeighbour(Node n){
 		return isNeighbour(n.getId());
 	}
 	
+	/**
+	 * checks if specific node is a neighbour of a node
+	 * 
+	 * @param id
+	 * 
+	 * @return true if they are
+	 * @return false if not
+	 */
 	public boolean isNeighbour(String id){
 		return neighbours.containsKey(id);
 	}
@@ -57,18 +103,39 @@ public class Node {
 		return null;
 	}
 	
+	/**
+	 * Getter for neightbour id's
+	 * 
+	 * @return neighbours.keySet()
+	 * 
+	 */
 	public Set<String> getNeighbourIds(){
 		return neighbours.keySet();
 	}
 	
+	/**
+	 * Getter for neighbour based in a string id
+	 * 
+	 * @param id
+	 * 
+	 * @return neighbours.get(id)
+	 */
 	public Node getNeighbourFromId(String id){
 		return neighbours.get(id);
 	}
 	
+	/**
+	 * Getter for string id
+	 * 
+	 * @return id
+	 */
 	public String getId(){
 		return id;
 	}
-
+	
+	/**
+	 * resets the buffer and makes a new hashset for it
+	 */
 	public void flushBuffer(){
 		for(Message m : buffer){
 			m.recordNode(getId());
@@ -76,7 +143,10 @@ public class Node {
 		}
 		buffer = new HashSet<>();
 	}
-	
+	/**
+	 * resets the buffer and makes a new hashset for it
+	 * while the queue is not empty will pop any existing messages
+	 */
 	public void dropQueue() {
 		flushBuffer();
 		while(!queue.isEmpty()){
@@ -84,6 +154,16 @@ public class Node {
 		}
 	}
 	
+	/**
+	 * receives the message sent to it from another node
+	 * records where the message came from and setReceived is 
+	 * turned to true
+	 * 
+	 * the message m is added to the buffer
+	 * 
+	 * @param m
+	 * 
+	 */
 	public void receiveMessage(Message m){
 		if(m.getDestination().equals(this.getId())){
 			m.recordNode(getId());
@@ -93,6 +173,11 @@ public class Node {
 		buffer.add(m);
 	}
 	
+	/**
+	 * sends the message sent to it from another node
+	 * can cancel the message if destination is empty
+	 * 
+	 */
 	public void sendMessage(){
 		if(!queue.isEmpty()){
 			Message toSend = queue.pop();
@@ -114,7 +199,13 @@ public class Node {
 			}
 		}
 	}
-
+	
+	/**
+	 * setter for router
+	 * 
+	 * @param router
+	 * 
+	 */
 	public void setRouter(Router router) {
 		this.router = router;
 	}

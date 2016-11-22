@@ -7,6 +7,15 @@ import java.util.Set;
 import core.Message;
 import core.Node;
 
+/**
+ * This class is the random algorithm that is suppose to be implemented
+ * 
+ * This algorithm will randomly choose a neighbour in the current node to send a message
+ * this will be done repeatedly until the message reaches it's target 
+ * 
+ * @author Griffin
+ *
+ */
 public class RandomRouter implements Router {
 
 	private final Node n;

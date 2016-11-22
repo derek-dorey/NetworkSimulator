@@ -6,6 +6,17 @@ import java.util.Set;
 import core.Message;
 import core.Node;
 
+/**
+ * This class is the flooding algorithm that is suppose to be implemented
+ * 
+ * This algorithm will flood the network with the message in hopes that it eventually
+ * reaches the target
+ * 
+ * It does this by making sure each node sends the message to all of it's neighbours 
+ * 
+ * @author Griffin
+ *
+ */
 public class FloodRouter implements Router {
 
 	private final Node node;
