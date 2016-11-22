@@ -7,6 +7,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,7 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-
+import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
@@ -45,9 +46,11 @@ public class Frame extends JFrame {
 
 	protected JPanel contentPane;
 	protected JTextField textField;
+	protected JTextArea txt;
 	protected static mxGraph graph = new mxGraph();
 	protected static HashMap m = new HashMap();
 	private mxGraphComponent graphComponent;
+
 	private Object cell;
 	private NetworkController controller;
 	private JButton btnNew;
@@ -80,7 +83,7 @@ public class Frame extends JFrame {
 	 */
 	public Frame() {
 		
-		super("JGraph - Network");
+		super("BitsPlease Network Simulator ");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 500);
 		setResizable(false);
@@ -104,7 +107,7 @@ public class Frame extends JFrame {
 		rdbtnFastest = new JRadioButton("Fastest Route");
 		rdbtnFastest.setBounds(697, 52, 109, 23);
 		
-		rdbtnLocal = new JRadioButton("Local");
+		rdbtnLocal = new JRadioButton("Adaptive");
 		rdbtnLocal.setBounds(808, 52, 109, 23);
 		
 		ButtonGroup bg = new ButtonGroup();
@@ -122,9 +125,14 @@ public class Frame extends JFrame {
 		graphComponent = new mxGraphComponent(graph);
 		graphComponent.setBounds(5, 5, 670, 380);
 		graphComponent.setConnectable(false);
+	
 		graphComponent.getViewport().setOpaque(true);
 		graphComponent.getViewport().setBackground(Color.WHITE);
 		contentPane.add(graphComponent);
+		
+	
+		
+		
 		
 		JLabel lblAl = new JLabel("Routing Algorithms:");
 		lblAl.setBounds(695, 5, 111, 14);
@@ -177,9 +185,6 @@ public class Frame extends JFrame {
 		
 		
 		JTextArea txt = new JTextArea();
-		//test purposes
-		// outputs and keep the original text do (current string + new string) then setText
-		//txt.setText("a\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\na\nb\nc\nd\n");
 		txt.setEditable(false); 
 		
 		JScrollPane sp = new JScrollPane(txt);
@@ -212,6 +217,8 @@ public class Frame extends JFrame {
 		rdbtnLocal.addActionListener(controller.radioButtonListener);
 	}
 	
+	
+	
 	public void addNetworkModel(Network n) {
 		this.model = n;
 	}
@@ -227,7 +234,16 @@ public class Frame extends JFrame {
 		if(e.getActionCommand().equals("New")) {
 			int nodeIndex = model.getNodes().indexOf(node);
 			@SuppressWarnings("unused")
-			AddGraphic add = new AddGraphic(model.getNodes().get(nodeIndex));	//add the node to the view
+			String name = model.getNodes().get(nodeIndex);
+			
+			/*
+			String message = "";
+			for(Integer s: model.getMessageBufferFromNode(name)){
+				message = message + "s\n";
+			}
+			*/
+			
+			AddGraphic add = new AddGraphic(name);	//add the node to the view
 		}
 		
 		else if(e.getActionCommand().equals("Delete")) {
@@ -267,6 +283,7 @@ public class Frame extends JFrame {
 		else if(e.getActionCommand().equals("Set Rate")) {
 			
 			textField.setText(null);		//clear the input field to reflect the new rate
-		}
+		} 
+		
 	}
 }

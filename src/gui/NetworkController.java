@@ -168,5 +168,10 @@ public class NetworkController implements ActionListener {
 			}
 			view.update(e, null);  		//update the view
 		}
+		
+		else if(e.getActionCommand().equals("Step")) {
+			view.txt.setText("hey");
+			view.update(e,null);
+		}
 	}
 }
