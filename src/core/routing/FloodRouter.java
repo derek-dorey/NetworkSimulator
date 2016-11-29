@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import core.Message;
-import core.Node;
+import core.NetworkNode;
 
 /**
  * This class is the flooding algorithm that is suppose to be implemented
@@ -19,9 +19,9 @@ import core.Node;
  */
 public class FloodRouter implements Router {
 
-	private final Node node;
+	private final NetworkNode node;
 
-	public FloodRouter(Node n) {
+	public FloodRouter(NetworkNode n) {
 		this.node = n;
 	}
 

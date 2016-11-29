@@ -1,12 +1,26 @@
 package core;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.StringJoiner;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import core.routing.RoutingAlgorithm;
 
@@ -29,7 +43,7 @@ public class Network {
 	private int messageNumber = 0;
 	
 	//nodeID to node
-	private Map<String,Node> nodes;
+	private Map<String,NetworkNode> networkNodes;
 	
 	//source to destination to message ids
 	private Map<String,Map<String,Set<Integer>>> messageIdsBySourceAndDestination;
@@ -42,9 +56,69 @@ public class Network {
 		this.messageCreationPeriod = 1;
 		this.routingAlg = routingAlg;
 		
-		this.nodes = new HashMap<>();
+		this.networkNodes = new HashMap<>();
 		this.messageIdsBySourceAndDestination = new HashMap<>();
 		this.finishedMessages = new HashMap<>();
+	}
+	
+	private Network(Document doc){
+		
+	}
+	
+	public static Network fromXml(InputStream in) throws SAXException, IOException, ParserConfigurationException{
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+		doc.getDocumentElement().normalize();
+		return new Network(doc);
+	}
+	
+	public void toXml(OutputStream out) throws ParserConfigurationException{
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		
+		//store the network's primitive fields
+		Element rootElement = doc.createElement("Network");
+        doc.appendChild(rootElement);
+        rootElement.setAttribute("stepNumber", Integer.valueOf(stepNumber).toString());
+        rootElement.setAttribute("messageCreationPeriod", Integer.valueOf(messageCreationPeriod).toString());
+        rootElement.setAttribute("routingAlg", routingAlg.toString());
+        rootElement.setAttribute("messageNumber", Integer.valueOf(messageNumber).toString());
+        
+        //store the metaData about the messages that have been sent
+        Element messageListing = doc.createElement("MessageListing");
+        rootElement.appendChild(messageListing);
+        for(String from : messageIdsBySourceAndDestination.keySet()){
+        	for(String to : messageIdsBySourceAndDestination.get(from).keySet()){
+                Element nodeInfo = doc.createElement("nodeInfo");
+                messageListing.appendChild(nodeInfo);
+                nodeInfo.setAttribute("from", from);
+                nodeInfo.setAttribute("to", to);
+                StringJoiner ids = new StringJoiner(",");
+                for(Integer id : messageIdsBySourceAndDestination.get(from).get(to)){
+                	ids.add(id.toString());
+                }
+                nodeInfo.setAttribute("ids", ids.toString());
+        	}
+        }
+        
+        //store the messages that have already finished their journey
+        Element finishedMessages = doc.createElement("FinishedMessages");
+        rootElement.appendChild(finishedMessages);
+        for(Integer id : this.finishedMessages.keySet()){
+        	Element finishedId = doc.createElement("FinishedId");
+        	finishedMessages.appendChild(finishedId);
+        	finishedId.setAttribute("Id", id.toString());
+        	for(Message m : this.finishedMessages.get(id)){
+        		finishedId.appendChild(m.toXml(doc));
+        	}
+        }
+        
+        
+        //store the nodes
+        Element nodes = doc.createElement("Nodes");
+        rootElement.appendChild(nodes);
+        for(NetworkNode node : networkNodes.values()){
+        	nodes.appendChild(node.toXml(doc));
+        }
+        
 	}
 	
 	/**
@@ -53,12 +127,12 @@ public class Network {
 	 * @return false iff the ID is already taken
 	 */
 	public boolean createNode(String id) {
-		if(nodes.containsKey(id)){
+		if(networkNodes.containsKey(id)){
 			return false;
 		}else{
-			Node n = new Node(id, this);
+			NetworkNode n = new NetworkNode(id, this);
 			//put the node into the network
-			nodes.put(id, n);
+			networkNodes.put(id, n);
 			
 			//give the node a router
 			setRoutingAlgorithm(routingAlg, n);
@@ -73,11 +147,11 @@ public class Network {
 	 * @return true if there was a node with that ID to remove and the removal was completed successfully.
 	 */
 	public boolean destroyNode(String id) {
-		if(!nodes.containsKey(id)){
+		if(!networkNodes.containsKey(id)){
 			return false;
 		}else{
 			//put the node into the network
-			nodes.remove(id);
+			networkNodes.remove(id);
 			
 			//remove space for message ids with this as a source
 			messageIdsBySourceAndDestination.remove(id);
@@ -95,7 +169,7 @@ public class Network {
 	 */
 	public void destroyAllNodes() {
 		//new set to prevent concurrent modification error
-		for(String nodeID : new HashSet<>(nodes.keySet())){
+		for(String nodeID : new HashSet<>(networkNodes.keySet())){
 			destroyNode(nodeID);
 		}
 	}
@@ -107,9 +181,9 @@ public class Network {
 	 * @return true iff a new distinct connection was formed successfully.
 	 */
 	public boolean connectNodes(String id1, String id2) {
-		if(nodes.containsKey(id1) && nodes.containsKey(id2)){
-			boolean temp = nodes.get(id1).connectTo(nodes.get(id2));
-			temp = nodes.get(id2).connectTo(nodes.get(id1)) || temp;
+		if(networkNodes.containsKey(id1) && networkNodes.containsKey(id2)){
+			boolean temp = networkNodes.get(id1).connectTo(networkNodes.get(id2));
+			temp = networkNodes.get(id2).connectTo(networkNodes.get(id1)) || temp;
 			return temp;
 		}else{
 			return false;
@@ -123,9 +197,9 @@ public class Network {
 	 * @return true iff the two nodes were connected before, and are no longer connected
 	 */
 	public boolean disconnectNodes(String id1, String id2) {
-		if(nodes.containsKey(id1) && nodes.containsKey(id2)){
-			boolean temp = nodes.get(id1).disconnectFrom(nodes.get(id2));
-			temp = nodes.get(id2).disconnectFrom(nodes.get(id1)) || temp;
+		if(networkNodes.containsKey(id1) && networkNodes.containsKey(id2)){
+			boolean temp = networkNodes.get(id1).disconnectFrom(networkNodes.get(id2));
+			temp = networkNodes.get(id2).disconnectFrom(networkNodes.get(id1)) || temp;
 			return temp;
 		}else{
 			return false;
@@ -136,8 +210,8 @@ public class Network {
 	 * calls disconnectNodes on each pair of connected nodes
 	 */
 	public void disconnectAllNodes() {
-		for(String nodeId1 : nodes.keySet()){
-			for(String nodeId2 : nodes.get(nodeId1).getNeighbourIds()){
+		for(String nodeId1 : networkNodes.keySet()){
+			for(String nodeId2 : networkNodes.get(nodeId1).getNeighbourIds()){
 				disconnectNodes(nodeId1, nodeId2);
 			}
 		}
@@ -146,7 +220,7 @@ public class Network {
 	public ArrayList<String> getNodes() {
 		
 		ArrayList<String> returnNodes = new ArrayList<String>();
-		for(String nodeID: nodes.keySet()) {
+		for(String nodeID: networkNodes.keySet()) {
 			returnNodes.add(nodeID);
 		}
 		
@@ -159,9 +233,9 @@ public class Network {
 	 * @return an ordered list of message ids, where element 0 is the one that has been there the longest. or null, if the specified node does not exist
 	 */
 	public List<Integer> getMessageBufferFromNode(String nodeId) {
-		if(nodes.get(nodeId) != null){
+		if(networkNodes.get(nodeId) != null){
 			List<Integer> ids = new ArrayList<>();
-			for(Message m : nodes.get(nodeId).getMessages()){
+			for(Message m : networkNodes.get(nodeId).getMessages()){
 				ids.add(m.getId());
 			}
 			return ids;
@@ -176,7 +250,7 @@ public class Network {
 	 * @return true iff there are instances of messages with this ID still traveling over the network
 	 */
 	public boolean messageFloating(int messageId){
-		for(Node n : nodes.values()){
+		for(NetworkNode n : networkNodes.values()){
 			for(Message m : n.getMessages()){
 				if(m.getId() == messageId){
 					return true;
@@ -235,12 +309,12 @@ public class Network {
 	 */
 	public void setRoutingAlgorithm(RoutingAlgorithm alg) {
 		clearNetworkHistory();
-		for(Node n : nodes.values()){
+		for(NetworkNode n : networkNodes.values()){
 			setRoutingAlgorithm(routingAlg, n);
 		}
 	}
 	
-	private void setRoutingAlgorithm(RoutingAlgorithm alg, Node n) {
+	private void setRoutingAlgorithm(RoutingAlgorithm alg, NetworkNode n) {
 		n.setRouter(alg.getRouter(n));
 	}
 	
@@ -260,7 +334,7 @@ public class Network {
 	 * empty all buffers on all nodes in the network
 	 */
 	public void clearNetworkBuffers() {
-		for(Node n : nodes.values()){
+		for(NetworkNode n : networkNodes.values()){
 			n.dropQueue();
 		}
 	}
@@ -343,21 +417,21 @@ public class Network {
 	 * @return true iff there is at least one path to get from every node to every other node.
 	 */
 	public boolean isAConnectedGraph() {
-		if(!nodes.isEmpty()){
+		if(!networkNodes.isEmpty()){
 			Set<String> visited = new HashSet<>();
-			Node origen = nodes.values().iterator().next();
+			NetworkNode origen = networkNodes.values().iterator().next();
 			visited.add(origen.getId());
 			isAConnectedGraphRecursive(origen, visited);
-			return nodes.keySet().containsAll(visited);
+			return networkNodes.keySet().containsAll(visited);
 		}
 		return false;
 	}
 	
-	private void isAConnectedGraphRecursive(Node n, Set<String> visited){
+	private void isAConnectedGraphRecursive(NetworkNode n, Set<String> visited){
 		for(String id : n.getNeighbourIds()){
 			if(!visited.contains(id)){
 				visited.add(id);
-				isAConnectedGraphRecursive(nodes.get(id), visited);
+				isAConnectedGraphRecursive(networkNodes.get(id), visited);
 			}
 		}
 	}
@@ -366,17 +440,17 @@ public class Network {
 	 * simulate one cycle
 	 */
 	public void step() {
-		if((stepNumber++)%messageCreationPeriod == 0 && nodes.size()>=2){
-			String sender = randomElement(nodes.keySet());
+		if((stepNumber++)%messageCreationPeriod == 0 && networkNodes.size()>=2){
+			String sender = randomElement(networkNodes.keySet());
 			String dest = sender;
-			while(sender.equals(dest = randomElement(nodes.keySet()))){}
+			while(sender.equals(dest = randomElement(networkNodes.keySet()))){}
 			Message m = new Message(messageNumber++, sender, dest);
-			nodes.get(sender).receiveMessage(m);
+			networkNodes.get(sender).receiveMessage(m);
 		}
-		for(Node n : nodes.values()){
+		for(NetworkNode n : networkNodes.values()){
 			n.sendMessage();
 		}
-		for(Node n : nodes.values()){
+		for(NetworkNode n : networkNodes.values()){
 			n.flushBuffer();
 		}
 	}

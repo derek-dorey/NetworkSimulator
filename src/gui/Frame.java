@@ -30,7 +30,7 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
 import core.Network;
-import core.Node;
+import core.NetworkNode;
 import core.routing.RoutingAlgorithm;
 /**
  * This class creates the Gui for the network

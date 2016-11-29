@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import core.Message;
-import core.Node;
+import core.NetworkNode;
 
 /**
  * This class is the random algorithm that is suppose to be implemented
@@ -18,9 +18,9 @@ import core.Node;
  */
 public class RandomRouter implements Router {
 
-	private final Node n;
+	private final NetworkNode n;
 	
-	public RandomRouter(Node n){
+	public RandomRouter(NetworkNode n){
 		this.n = n;
 	}
 	

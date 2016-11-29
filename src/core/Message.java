@@ -3,6 +3,9 @@ package core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 /**
  * Makes a print statement for the user that displays the start and destination
  * of the message with the average hops.
@@ -115,5 +118,10 @@ public class Message {
 	 */
 	public int hops() {
 		return history.size()-1;
+	}
+
+	public Node toXml(Document doc) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

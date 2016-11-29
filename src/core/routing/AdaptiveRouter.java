@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import core.Message;
-import core.Node;
+import core.NetworkNode;
 
 /**
  * This class is the custom algorithm that we are suppose to implement
@@ -23,12 +23,12 @@ import core.Node;
  */
 public class AdaptiveRouter implements Router {
 
-	private final Node node;
+	private final NetworkNode node;
 	private final Router randomRouter;
 	
 	private final Map<String,String> recordTabel;
 	
-	public AdaptiveRouter(Node n) {
+	public AdaptiveRouter(NetworkNode n) {
 		this.node = n;
 		this.recordTabel = new HashMap<>();
 		randomRouter = new RandomRouter(n);

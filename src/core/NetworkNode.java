@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
 import core.routing.Router;
 
 /**
@@ -18,10 +21,10 @@ import core.routing.Router;
  * @author Derek Dorey & Griffin Barrett
  *
  */
-public class Node {
+public class NetworkNode {
 	private final String id;
 	private final Network network;
-	private Map<String,Node> neighbours;
+	private Map<String,NetworkNode> neighbours;
 	
 	private LinkedList<Message> queue;
 	private Set<Message> buffer;
@@ -36,7 +39,7 @@ public class Node {
 	 * @param id
 	 * @param network
 	 */
-	public Node(String id, Network network) {
+	public NetworkNode(String id, Network network) {
 		this.id = id;
 		this.network = network;
 		neighbours = new HashMap<>();
@@ -52,7 +55,7 @@ public class Node {
 	 * @return false if not
 	 * @return true if they are
 	 */
-	public boolean connectTo(Node newNeighbour){
+	public boolean connectTo(NetworkNode newNeighbour){
 		if(neighbours.containsKey(newNeighbour.getId())){
 			return false;
 		}else{
@@ -69,7 +72,7 @@ public class Node {
 	 * @return false if not
 	 * @return true if they are
 	 */
-	public boolean disconnectFrom(Node exNeighbour){
+	public boolean disconnectFrom(NetworkNode exNeighbour){
 		if(!neighbours.containsKey(exNeighbour.getId())){
 			return false;
 		}else{
@@ -86,7 +89,7 @@ public class Node {
 	 * @return true if they are
 	 * @return false if not
 	 */
-	public boolean isNeighbour(Node n){
+	public boolean isNeighbour(NetworkNode n){
 		return isNeighbour(n.getId());
 	}
 	
@@ -123,7 +126,7 @@ public class Node {
 	 * 
 	 * @return neighbours.get(id)
 	 */
-	public Node getNeighbourFromId(String id){
+	public NetworkNode getNeighbourFromId(String id){
 		return neighbours.get(id);
 	}
 	
@@ -212,6 +215,11 @@ public class Node {
 	 */
 	public void setRouter(Router router) {
 		this.router = router;
+	}
+
+	public Node toXml(Document doc) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

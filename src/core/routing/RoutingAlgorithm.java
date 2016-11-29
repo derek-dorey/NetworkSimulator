@@ -1,6 +1,6 @@
 package core.routing;
 
-import core.Node;
+import core.NetworkNode;
 
 
 /**
@@ -24,9 +24,9 @@ public enum RoutingAlgorithm {
 		routerClass = r;
 	}
 	
-	public Router getRouter(Node n){
+	public Router getRouter(NetworkNode n){
 		try {
-			return routerClass.getConstructor(Node.class).newInstance(n);
+			return routerClass.getConstructor(NetworkNode.class).newInstance(n);
 		} catch (Throwable t) {
 			throw new IllegalArgumentException("The enum is broken");
 		}

@@ -3,7 +3,7 @@ package core.routing;
 import java.util.HashSet;
 import java.util.Set;
 import core.Message;
-import core.Node;
+import core.NetworkNode;
 
 /**
  * This class is the Shortest path algorithm that is suppose to be implemented
@@ -19,9 +19,9 @@ import core.Node;
  */
 public class ShortestPathRouter implements Router {
 
-	private final Node node;
+	private final NetworkNode node;
 
-	public ShortestPathRouter(Node n) {
+	public ShortestPathRouter(NetworkNode n) {
 		this.node = n;
 	}
 
@@ -58,7 +58,7 @@ public class ShortestPathRouter implements Router {
 	 * @return true if destination is start and if there is a valid path from start to end
 	 * @return false if if statements are missed (meaning valid path does not exist)
 	 */
-	private boolean isNumberOfHopsToDest(Node n, String destId, int hops) {
+	private boolean isNumberOfHopsToDest(NetworkNode n, String destId, int hops) {
 		if (hops == 0) {
 			return n.getId().equals(destId);
 		} else {
