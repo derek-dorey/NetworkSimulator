@@ -7,6 +7,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,6 +59,8 @@ public class Frame extends JFrame {
 	private JButton btnConnect;
 	private JButton btnDisconnect;
 	private JButton btnSetRate;
+	private JButton btnSave;
+	private JButton btnRestore;
 	private JRadioButton rdbtnFlooding;
 	private JRadioButton rdbtnRandom;
 	private JRadioButton rdbtnFastest;
@@ -168,6 +171,13 @@ public class Frame extends JFrame {
 		btnStep.setBounds(411, 396, 89, 23);
 		contentPane.add(btnStep);
 		
+		btnSave = new JButton("Save");
+		btnSave.setBounds(550, 396, 89, 21);
+		contentPane.add(btnSave);
+		
+		btnRestore = new JButton("Restore");
+		btnRestore.setBounds(680, 396, 89, 21);
+		contentPane.add(btnRestore);
         		
 		JLabel lblNetworksBufferOutput = new JLabel("Networks Buffer Output:");
 		lblNetworksBufferOutput.setBounds(697, 140, 141, 14);
@@ -188,6 +198,8 @@ public class Frame extends JFrame {
 		btnDisconnect.addActionListener(controller);
 		btnSetRate.addActionListener(controller);
 		btnStep.addActionListener(controller);
+		btnSave.addActionListener(controller);
+		btnRestore.addActionListener(controller);
 		textField.setEditable(true);
 		textField.addActionListener(controller);
 		rdbtnFlooding.addActionListener(controller.radioButtonListener);

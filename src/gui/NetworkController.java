@@ -2,8 +2,18 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import core.Network;
 import core.routing.RoutingAlgorithm;
@@ -171,6 +181,61 @@ public class NetworkController implements ActionListener {
 		else if(e.getActionCommand().equals("Step")) {
 			model.step();
 			view.update(e,null);
+		}
+		
+		else if(e.getActionCommand().equals("Save")) {
+			
+			String filePath = System.getProperty("user.dir") + "/SavedFiles/";
+			
+			String fileName = JOptionPane.showInputDialog(null,"Save as (e.g. 'myNetwork.xml'): ", null, JOptionPane.PLAIN_MESSAGE);
+			
+			fileName = filePath + fileName;
+			
+			OutputStream saveStream;
+			Path p;
+			
+			try {
+				p = Paths.get(fileName);
+				try {
+					model.toXml(Files.newOutputStream(p));
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+				} catch (ParserConfigurationException pce) {
+					pce.printStackTrace();
+				}
+				
+			} catch (InvalidPathException ipe) {
+				ipe.printStackTrace();
+			} 
+		}
+		
+		else if(e.getActionCommand().equals("Restore")) {
+			
+			String filePath = System.getProperty("user.dir") + "/SavedFiles/";
+			
+			String fileName = JOptionPane.showInputDialog(null,"File Name (e.g. 'myNetwork.xml'): ", null, JOptionPane.PLAIN_MESSAGE);
+			
+			fileName = filePath + fileName;
+			
+			InputStream restoreStream;
+			Path p;
+			
+			try{
+				p = Paths.get(fileName);
+				
+				try {
+					model = model.fromXml(Files.newInputStream(p));
+				} catch (SAXException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (ParserConfigurationException e1) {
+					e1.printStackTrace();
+				}
+				
+			} catch (InvalidPathException ipe) {
+				ipe.printStackTrace();
+			}
 		}
 	}
 }

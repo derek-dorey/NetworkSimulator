@@ -3,6 +3,7 @@ package core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,9 +14,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -116,9 +124,45 @@ public class Network {
         Element nodes = doc.createElement("Nodes");
         rootElement.appendChild(nodes);
         for(NetworkNode node : networkNodes.values()){
-        	nodes.appendChild(node.toXml(doc));
+        	Element savedNode = doc.createElement("savedNode");
+        	nodes.appendChild(savedNode);
+        	savedNode.setAttribute("node",node.toString());
         }
         
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        
+        try {
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new StringWriter());
+			
+			try {
+				transformer.transform(source, result);
+			} catch (TransformerException e) {
+				e.printStackTrace();
+			}
+			
+			String xmlString = result.getWriter().toString();
+			System.out.println(xmlString);
+			byte[] bytesForStream = xmlString.getBytes();
+			
+			try {
+				out.write(bytesForStream);
+				out.flush();
+			} catch (IOException io) {
+				io.printStackTrace();
+			} finally {
+				try {
+					if (out != null) {
+						out.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}	
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
