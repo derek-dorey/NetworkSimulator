@@ -11,8 +11,9 @@ import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -263,7 +264,7 @@ public class Frame extends JFrame {
 			 graph.getModel().beginUpdate();
 			 
 		     try {
-		            Object[] edges = graph.getEdgesBetween( v1, v2);
+		            Object[] edges = graph.getEdgesBetween(v1, v2);
 
 		            for( Object edge: edges) {
 		                graph.getModel().remove(edge);
@@ -282,6 +283,57 @@ public class Frame extends JFrame {
 		}
 		
 	}
+	
+	public void clear() {
+		
+		graph.getModel().beginUpdate();
+		
+		graph = new mxGraph();
+		graphComponent = new mxGraphComponent(graph);
+		graphComponent.setBounds(5, 5, 670, 380);
+		graphComponent.setConnectable(false);
+	
+		graphComponent.getViewport().setOpaque(true);
+		graphComponent.getViewport().setBackground(Color.WHITE);
+		contentPane.add(graphComponent);
+		setContentPane(graphComponent);
+		
+		graph.getModel().endUpdate();
+		
+	}
+	
+	public void redraw() {
+		
+		ArrayList<String> nodes = model.getNodes();
+		int numberOfNodes;
+		Set<String> nodeNeighbours;
+		
+		if(nodes.isEmpty()) {
+			return;
+		} else {
+			numberOfNodes = nodes.size();
+		}
+		for(String node : nodes) {
+			graph.getModel().beginUpdate();
+			AddGraphic add = new AddGraphic(node);
+			graph.getModel().endUpdate();
+		}
+		
+		for(String node : nodes) {
+			if(model.getNetworkNodes().get(node).hasNeighbours()) {
+				nodeNeighbours = model.getNetworkNodes().get(node).getNeighbourIds();
+				
+				for(String neighbour : nodeNeighbours) {
+					String name = "";
+					graph.getModel().beginUpdate();
+			        getGraph().insertEdge(parent, name, null, getM().get(node), getM().get(neighbour),"endArrow=none");
+			    	graph.getModel().endUpdate();
+				}
+			}
+		}	
+	}
+	
+	
 	public BufferDisplayPannel getBufferDisplay() {
 		return bufferDisplay;
 	}

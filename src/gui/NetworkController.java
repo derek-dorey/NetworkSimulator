@@ -224,6 +224,7 @@ public class NetworkController implements ActionListener {
 				p = Paths.get(fileName);
 				
 				try {
+	
 					model = model.fromXml(Files.newInputStream(p));
 				} catch (SAXException e1) {
 					e1.printStackTrace();
@@ -236,6 +237,10 @@ public class NetworkController implements ActionListener {
 			} catch (InvalidPathException ipe) {
 				ipe.printStackTrace();
 			}
+			
+			view.clear();
+			view.redraw();
+			
 		}
 	}
 }

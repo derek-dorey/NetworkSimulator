@@ -520,4 +520,8 @@ public class Network {
 		System.out.println("From:"+m.getSender()+" to:"+m.getDestination()+" av. transmitions:"+this.getAverageTransmitions(m.getSender(), m.getDestination()));
 	}
 	
+	public Map<String,NetworkNode> getNetworkNodes() {
+		return networkNodes;
+	}
+	
 }

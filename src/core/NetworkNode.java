@@ -110,7 +110,7 @@ public class NetworkNode {
 	}
 	
 	/**
-	 * Getter for neightbour id's
+	 * Getter for neighbour id's
 	 * 
 	 * @return neighbours.keySet()
 	 * 
@@ -120,7 +120,7 @@ public class NetworkNode {
 	}
 	
 	/**
-	 * Getter for neighbour based in a string id
+	 * Getter for neighbour based on a string id
 	 * 
 	 * @param id
 	 * 
@@ -220,6 +220,10 @@ public class NetworkNode {
 	public Node toXml(Document doc) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean hasNeighbours() {
+		return !neighbours.isEmpty();
 	}
 }
 
