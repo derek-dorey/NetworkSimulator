@@ -28,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.layout.mxFastOrganicLayout;
+import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
@@ -135,9 +137,10 @@ public class Frame extends JFrame {
 		graphComponent.getViewport().setBackground(Color.WHITE);
 		contentPane.add(graphComponent);
 		
-	
-		
-		
+		mxIGraphLayout graphLayout = new mxFastOrganicLayout(graph);
+		graph.getModel().beginUpdate();
+		graphLayout.execute(graph.getDefaultParent());
+		graph.getModel().endUpdate();
 		
 		JLabel lblAl = new JLabel("Routing Algorithms:");
 		lblAl.setBounds(695, 5, 111, 14);
@@ -296,6 +299,10 @@ public class Frame extends JFrame {
 		graphComponent.getViewport().setOpaque(true);
 		graphComponent.getViewport().setBackground(Color.WHITE);
 		contentPane.add(graphComponent);
+		
+		mxIGraphLayout graphLayout = new mxFastOrganicLayout(graph);
+		graphLayout.execute(graph.getDefaultParent());
+	
 		setContentPane(graphComponent);
 		
 		graph.getModel().endUpdate();
