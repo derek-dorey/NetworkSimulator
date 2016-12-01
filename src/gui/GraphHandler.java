@@ -29,7 +29,7 @@ public class GraphHandler implements NetworkListener{
 		graph.setStrict(false);
 		graph.setAutoCreate( true );
 		
-		graph.addAttribute("ui.stylesheet","url('file:src/com/asmg/access/gui/Network.css')");
+		graph.addAttribute("ui.stylesheet","url('file:Network.css')");
 		viewer = new Viewer(graph,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		layout = new LinLog();
 		viewer.enableAutoLayout(layout);
