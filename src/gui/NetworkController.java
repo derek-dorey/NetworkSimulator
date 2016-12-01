@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,7 +11,9 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -185,17 +188,23 @@ public class NetworkController implements ActionListener {
 		
 		else if(e.getActionCommand().equals("Save")) {
 			
+			//set default directory for saved files
 			String filePath = System.getProperty("user.dir") + "/SavedFiles/";
 			
-			String fileName = JOptionPane.showInputDialog(null,"Save as (e.g. 'myNetwork.xml'): ", null, JOptionPane.PLAIN_MESSAGE);
+			JFileChooser fileSaver = new JFileChooser();
+			fileSaver.setCurrentDirectory(new File(filePath));
+			FileNameExtensionFilter saveFilter = new FileNameExtensionFilter(".xml files","xml");
+			fileSaver.setFileFilter(saveFilter);
 			
-			fileName = filePath + fileName;
+			//open save menu
+			int userSelection = fileSaver.showSaveDialog(view);
 			
-			OutputStream saveStream;
-			Path p;
-			
-			try {
-				p = Paths.get(fileName);
+			//check if user saved a file
+			if(userSelection == JFileChooser.APPROVE_OPTION) {
+				
+				File destination = fileSaver.getSelectedFile();
+				Path p = destination.toPath();
+				
 				try {
 					model.toXml(Files.newOutputStream(p));
 				} catch (IOException ioe) {
@@ -203,39 +212,37 @@ public class NetworkController implements ActionListener {
 				} catch (ParserConfigurationException pce) {
 					pce.printStackTrace();
 				}
-				
-			} catch (InvalidPathException ipe) {
-				ipe.printStackTrace();
-			} 
+					
+			}
 		}
 		
-		else if(e.getActionCommand().equals("Restore")) {
+		else if(e.getActionCommand().equals("Load")) {
 			
 			String filePath = System.getProperty("user.dir") + "/SavedFiles/";
 			
-			String fileName = JOptionPane.showInputDialog(null,"File Name (e.g. 'myNetwork.xml'): ", null, JOptionPane.PLAIN_MESSAGE);
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setCurrentDirectory(new File(filePath));
+			FileNameExtensionFilter chooseFilter = new FileNameExtensionFilter(".xml files","xml");
+			fileChooser.setFileFilter(chooseFilter);
 			
-			fileName = filePath + fileName;
+			//open selection menu
+			int userSelection = fileChooser.showOpenDialog(view);
 			
-			InputStream restoreStream;
-			Path p;
-			
-			try{
-				p = Paths.get(fileName);
+			if(userSelection == JFileChooser.APPROVE_OPTION) {
+				
+				File selection = fileChooser.getSelectedFile();
+				Path p = selection.toPath();
 				
 				try {
-	
+		
 					model = model.fromXml(Files.newInputStream(p));
 				} catch (SAXException e1) {
-					e1.printStackTrace();
+						e1.printStackTrace();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+						e1.printStackTrace();
 				} catch (ParserConfigurationException e1) {
-					e1.printStackTrace();
-				}
-				
-			} catch (InvalidPathException ipe) {
-				ipe.printStackTrace();
+						e1.printStackTrace();
+				}		
 			}
 			
 			view.clear();

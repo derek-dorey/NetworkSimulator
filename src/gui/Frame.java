@@ -27,10 +27,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-//import com.mxgraph.layout.mxCircleLayout;
-//import com.mxgraph.swing.mxGraphComponent;
-//import com.mxgraph.view.mxGraph;
-
 import core.Network;
 import core.NetworkNode;
 import core.routing.RoutingAlgorithm;
