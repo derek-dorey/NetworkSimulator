@@ -37,7 +37,6 @@ import core.routing.RoutingAlgorithm;
 
 
 
-@SuppressWarnings("serial")
 public class Frame extends JFrame {
 	
 	private Network model;
