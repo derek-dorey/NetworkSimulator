@@ -27,9 +27,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
+//import com.mxgraph.layout.mxCircleLayout;
+//import com.mxgraph.swing.mxGraphComponent;
+//import com.mxgraph.view.mxGraph;
 
 import core.Network;
 import core.NetworkNode;
@@ -49,9 +49,9 @@ public class Frame extends JFrame {
 	protected JPanel contentPane;
 	protected JTextField textField;
 	protected JTextArea txt;
-	protected static mxGraph graph = new mxGraph();
+	//protected static mxGraph graph = new mxGraph();
 	protected static HashMap m = new HashMap();
-	private mxGraphComponent graphComponent;
+	//private mxGraphComponent graphComponent;
 
 	private Object cell;
 	private NetworkController controller;
@@ -77,9 +77,9 @@ public class Frame extends JFrame {
 		return m;
 	}
 
-	public static mxGraph getGraph() {
-		return graph;
-	}
+	//public static mxGraph getGraph() {
+	//	return graph;
+	//}
 
 	/**
 	 * Create the frame.
@@ -127,13 +127,13 @@ public class Frame extends JFrame {
 		contentPane.add(rdbtnLocal);
 		
 		//graph component
-		graphComponent = new mxGraphComponent(graph);
-		graphComponent.setBounds(5, 5, 670, 380);
-		graphComponent.setConnectable(false);
+		//graphComponent = new mxGraphComponent(graph);
+		//graphComponent.setBounds(5, 5, 670, 380);
+		//graphComponent.setConnectable(false);
 	
-		graphComponent.getViewport().setOpaque(true);
-		graphComponent.getViewport().setBackground(Color.WHITE);
-		contentPane.add(graphComponent);
+		//graphComponent.getViewport().setOpaque(true);
+		//graphComponent.getViewport().setBackground(Color.WHITE);
+		//contentPane.add(graphComponent);
 		
 	
 		
@@ -238,40 +238,40 @@ public class Frame extends JFrame {
 			}
 			*/
 			
-			AddGraphic add = new AddGraphic(name);	//add the node to the view
+			//AddGraphic add = new AddGraphic(name);	//add the node to the view
 		}
 		
 		else if(e.getActionCommand().equals("Delete")) {
 			
 			Object v2 = getM().get(node);	//locate the deleted node in the view
 			
-			graph.getModel().beginUpdate();
+			//graph.getModel().beginUpdate();
 	        try {
-	        	graph.removeCells(new Object[]{v2});
+	        	//graph.removeCells(new Object[]{v2});
 				
 	        } finally {
-	            graph.getModel().endUpdate();
+	            //graph.getModel().endUpdate();
 	        }
 		}
 		
 		else if(e.getActionCommand().equals("Connect")) {
 			String name = "";
-	        getGraph().insertEdge(parent, name, null, v1, v2,"endArrow=none");
+	        //getGraph().insertEdge(parent, name, null, v1, v2,"endArrow=none");
 		}
 		
 		else if(e.getActionCommand().equals("Disconnect")) {
 		
-			 graph.getModel().beginUpdate();
+			 //graph.getModel().beginUpdate();
 			 
 		     try {
-		            Object[] edges = graph.getEdgesBetween(v1, v2);
+		            //Object[] edges = graph.getEdgesBetween(v1, v2);
 
-		            for( Object edge: edges) {
-		                graph.getModel().remove(edge);
-		            }
+		            //for( Object edge: edges) {
+		            //    graph.getModel().remove(edge);
+		            //}
 
 		        } finally {
-		            graph.getModel().endUpdate();
+		            //graph.getModel().endUpdate();
 		     }
 		}
 		
@@ -285,7 +285,7 @@ public class Frame extends JFrame {
 	}
 	
 	public void clear() {
-		
+		/*
 		graph.getModel().beginUpdate();
 		
 		graph = new mxGraph();
@@ -299,11 +299,11 @@ public class Frame extends JFrame {
 		setContentPane(graphComponent);
 		
 		graph.getModel().endUpdate();
-		
+		*/
 	}
 	
 	public void redraw() {
-		
+		/*
 		ArrayList<String> nodes = model.getNodes();
 		int numberOfNodes;
 		Set<String> nodeNeighbours;
@@ -331,6 +331,7 @@ public class Frame extends JFrame {
 				}
 			}
 		}	
+		*/
 	}
 	
 	

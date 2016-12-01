@@ -91,6 +91,7 @@ public class Network {
         rootElement.setAttribute("messageNumber", Integer.valueOf(messageNumber).toString());
         
         //store the metaData about the messages that have been sent
+        //ie: source destination, id Number
         Element messageListing = doc.createElement("MessageListing");
         rootElement.appendChild(messageListing);
         for(String from : messageIdsBySourceAndDestination.keySet()){
@@ -124,10 +125,29 @@ public class Network {
         Element nodes = doc.createElement("Nodes");
         rootElement.appendChild(nodes);
         for(NetworkNode node : networkNodes.values()){
-        	Element savedNode = doc.createElement("savedNode");
-        	nodes.appendChild(savedNode);
-        	savedNode.setAttribute("node",node.toString());
+        	nodes.appendChild(node.toXml(doc));
         }
+        
+        //store connections
+        Element connections = doc.createElement("Connections");
+        rootElement.appendChild(connections);
+        Set<Set<String>> connectionSet = new HashSet<>();
+        for(String nodeId : this.networkNodes.keySet()){
+        	for(String nodeId2 : this.networkNodes.get(nodeId).getNeighbourIds()){
+        		Set<String> pair = new HashSet<>();
+        		pair.add(nodeId);
+        		pair.add(nodeId2);
+        		connectionSet.add(pair);
+        	}
+        }
+        for(Set<String> connection : connectionSet){
+        	Element connectionElement = doc.createElement("Connection");
+        	Iterator<String> ittr = connection.iterator();
+        	connectionElement.setAttribute("Node1", ittr.next());
+        	connectionElement.setAttribute("Node2", ittr.next());
+        	connections.appendChild(connectionElement);
+        }
+        
         
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         
