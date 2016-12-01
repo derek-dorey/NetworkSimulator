@@ -63,7 +63,7 @@ public class Frame extends JFrame {
 	private JButton btnDisconnect;
 	private JButton btnSetRate;
 	private JButton btnSave;
-	private JButton btnRestore;
+	private JButton btnLoad;
 	private JRadioButton rdbtnFlooding;
 	private JRadioButton rdbtnRandom;
 	private JRadioButton rdbtnFastest;
@@ -179,9 +179,9 @@ public class Frame extends JFrame {
 		btnSave.setBounds(550, 396, 89, 21);
 		contentPane.add(btnSave);
 		
-		btnRestore = new JButton("Restore");
-		btnRestore.setBounds(680, 396, 89, 21);
-		contentPane.add(btnRestore);
+		btnLoad = new JButton("Load");
+		btnLoad.setBounds(680, 396, 89, 21);
+		contentPane.add(btnLoad);
         		
 		JLabel lblNetworksBufferOutput = new JLabel("Networks Buffer Output:");
 		lblNetworksBufferOutput.setBounds(697, 140, 141, 14);
@@ -203,7 +203,7 @@ public class Frame extends JFrame {
 		btnSetRate.addActionListener(controller);
 		btnStep.addActionListener(controller);
 		btnSave.addActionListener(controller);
-		btnRestore.addActionListener(controller);
+		btnLoad.addActionListener(controller);
 		textField.setEditable(true);
 		textField.addActionListener(controller);
 		rdbtnFlooding.addActionListener(controller.radioButtonListener);
