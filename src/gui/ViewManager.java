@@ -10,9 +10,6 @@ import java.nio.file.Path;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import core.Network;
 import core.NetworkManager;
@@ -34,9 +31,11 @@ public class ViewManager {
 		viewFrame.getBtnCreate().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
 				String createName = JOptionPane.showInputDialog(null, "Node ID:", null, JOptionPane.PLAIN_MESSAGE);
-				networkManager.createNode(createName);
+				
+				if(!createName.isEmpty()) {
+					networkManager.createNode(createName);
+				}
 			}	
 		});
 		
@@ -141,12 +140,24 @@ public class ViewManager {
 		viewFrame.getBtnRate().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-			}
+				String input = JOptionPane.showInputDialog(null, "New Rate: ", null, JOptionPane.PLAIN_MESSAGE);
+				try {
+					int rate = Integer.parseInt(input);
+					
+					if(rate>0) {
+						networkManager.setRate(rate);
+					}
+				} catch (NumberFormatException n) {								
+					JOptionPane.showMessageDialog(viewFrame,"Invalid input, please enter a positive integer value");
+				}
+			}	
 		});
 		
 		viewFrame.getBtnAlgorithm().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				RoutingAlgorithm algorithm = (RoutingAlgorithm)JOptionPane.showInputDialog(viewFrame, "Select Routing Algorithm: ",
+	                    "Routing Algorithm",JOptionPane.PLAIN_MESSAGE,null,RoutingAlgorithm.values(),null);
+				networkManager.setAlgorithm(algorithm);
 			}
 		});
 

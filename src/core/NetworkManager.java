@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import core.routing.RoutingAlgorithm;
 import gui.GraphHandler;
 
 public class NetworkManager {
@@ -16,8 +17,7 @@ public class NetworkManager {
 	private GraphHandler networkListener;
 	private Network nodeNetwork;
 	
-	public NetworkManager(Network n) {
-		nodeNetwork = n;
+	public NetworkManager() {
 	}
 
 	public void registerNetworkListener(GraphHandler gh) {
@@ -59,7 +59,7 @@ public class NetworkManager {
 		}
 	}
 	
-	public void setAlgorithum(){
+	public void setAlgorithm(RoutingAlgorithm alg){
 		
 	}
 	
