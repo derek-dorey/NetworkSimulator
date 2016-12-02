@@ -25,9 +25,7 @@ public class NetworkManager {
 	}
 	
 	public void createNode(String id) {
-		
 		nodeNetwork.createNode(id);
-		
 	}
 	
 	public void destroyNode(String id) {
@@ -47,8 +45,9 @@ public class NetworkManager {
 		nodeNetwork.step();
 	}
 	
+	
 	public void undo() {
-		//ask
+		//nodeNetwork.undo();
 	}
 	
 	public void save(OutputStream out) {
@@ -60,7 +59,7 @@ public class NetworkManager {
 	}
 	
 	public void setAlgorithm(RoutingAlgorithm alg){
-		
+		nodeNetwork.setRoutingAlgorithm(alg);
 	}
 	
 	@SuppressWarnings("static-access")

@@ -1,6 +1,11 @@
 package core.routing;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import core.Message;
 import core.NetworkNode;
@@ -11,10 +16,11 @@ import core.NetworkNode;
  * This algorithm will get the message for the starting point to the ending
  * point in the shortest amount of hops
  * 
- * It does this by first going through the network and finding a path with the least
- * hops by comparing it to every possible path from the starting point to the end
+ * It does this by first going through the network and finding a path with the
+ * least hops by comparing it to every possible path from the starting point to
+ * the end
  * 
- * @author Griffin
+ * @author Griffin, Ben
  *
  */
 public class ShortestPathRouter implements Router {
@@ -23,54 +29,56 @@ public class ShortestPathRouter implements Router {
 
 	public ShortestPathRouter(NetworkNode n) {
 		this.node = n;
+
 	}
 
 	@Override
 	public Set<String> route(Message m) {
-		Set<String> out = new HashSet<>();
-		Set<String> neighborIds = node.getNeighbourIds();
-		int hops = 0;
-		
-		try{
-		bigLoop: while (true) {
-			for (String id : neighborIds) {
-				if (isNumberOfHopsToDest(node.getNeighbourFromId(id), m.getDestination(), hops)) {
-					out.add(id);
-					break bigLoop;
+		Map<String, NetworkNode> nodes = new HashMap<>();
+		Map<String, Integer> distances = new HashMap<>();
+		// destination to source
+		Map<String, String> path = new HashMap<>();
+		LinkedList<String> checking = new LinkedList<>();
+
+		nodes.put(node.getId(), node);
+		distances.put(node.getId(), Integer.valueOf(0));
+		checking.add(node.getId());
+
+		String curentId = node.getId();
+		while ((!checking.isEmpty()) && !m.getDestination().equals(curentId = checking.poll())) {
+			NetworkNode currentNode = nodes.get(curentId);
+			for (String id : currentNode.getNeighbourIds()) {
+				nodes.put(id, currentNode.getNeighbourFromId(id));
+				if (!distances.containsKey(id) || distances.get(id) < distances.get(currentNode)) {
+					path.put(id, curentId);
+					distances.put(id, distances.get(currentNode) + 1);
+				}
+				if(!checking.contains(id)){
+					checking.add(id);
+					Collections.sort(checking, new Comparator<String>() {
+						@Override
+						public int compare(String arg0, String arg1) {
+							return distances.get(arg1) - distances.get(arg0);
+						}
+					});
 				}
 			}
-			hops++;
 		}
-		}catch(StackOverflowError e){
-			System.out.println("The search for the shortest path failed. This means that there is no path shorter than the max stack size.");
+		if(m.getDestination().equals(curentId)){
+			String lastId = curentId;
+			while(!node.getId().equals(curentId)){
+				lastId = curentId;
+				curentId = path.get(curentId);
+			}
+			Set<String> out = new HashSet<>();
+			out.add(lastId);
+			return out;
+			
+		}else{
+			//return an empty set, we could not find a path 
 			return new HashSet<>();
 		}
-		return out;
 	}
-
-	/**
-	 * Method that checks the number of hops from start to destination
-	 * 
-	 * @param n
-	 * @param destId
-	 * @param hops
-	 * 
-	 * @return true if destination is start and if there is a valid path from start to end
-	 * @return false if if statements are missed (meaning valid path does not exist)
-	 */
-	private boolean isNumberOfHopsToDest(NetworkNode n, String destId, int hops) {
-		if (hops == 0) {
-			return n.getId().equals(destId);
-		} else {
-			for (String neighborId : n.getNeighbourIds()) {
-				if (isNumberOfHopsToDest(n.getNeighbourFromId(neighborId), destId, hops - 1)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 
 	@Override
 	public RoutingAlgorithm getAlgorithm() {
