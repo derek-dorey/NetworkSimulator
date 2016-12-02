@@ -120,7 +120,7 @@ public class ViewFrame extends JFrame {
 		gbc_btnStep.gridx = 10;
 		gbc_btnStep.gridy = 1;
 		contentPane.add(btnStep, gbc_btnStep);
-		
+		setVisible(true);
 		
 	}
 	public JButton getBtnUndo() {

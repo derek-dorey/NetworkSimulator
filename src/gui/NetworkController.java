@@ -40,7 +40,7 @@ public class NetworkController implements ActionListener {
 		view = v;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		//instantiate the model with default set to random routing algorithm
 		model = new Network(RoutingAlgorithm.RANDOM);
@@ -74,7 +74,7 @@ public class NetworkController implements ActionListener {
 					}
 				}
 			};
-	}
+	}*/
 	
 	/***
 	 * Primary action listener for user inputs.
