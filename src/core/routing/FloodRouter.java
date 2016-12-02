@@ -31,4 +31,10 @@ public class FloodRouter implements Router {
 		out.removeAll(m.getHistory());
 		return out;
 	}
+	
+
+	@Override
+	public RoutingAlgorithm getAlgorithm() {
+		return RoutingAlgorithm.FLOOD;
+	}
 }

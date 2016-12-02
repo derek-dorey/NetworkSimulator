@@ -9,4 +9,5 @@ import core.Message;
  */
 public interface Router {
 	public Set<String> route(Message toSend);
+	public RoutingAlgorithm getAlgorithm();
 }

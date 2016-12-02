@@ -16,7 +16,7 @@ public enum RoutingAlgorithm {
 	RANDOM(RandomRouter.class), 
 	SHORTEST_PATH(ShortestPathRouter.class), 
 	FLOOD(FloodRouter.class), 
-	ADAPTIVE(AdaptiveRouter.class);
+	BETTER_RANDOM(BetterRandomRouter.class);
 	
 	private Class<? extends Router> routerClass;
 	

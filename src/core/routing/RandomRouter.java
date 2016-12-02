@@ -34,4 +34,8 @@ public class RandomRouter implements Router {
 		return set;
 	}
 
+	@Override
+	public RoutingAlgorithm getAlgorithm() {
+		return RoutingAlgorithm.RANDOM;
+	}
 }

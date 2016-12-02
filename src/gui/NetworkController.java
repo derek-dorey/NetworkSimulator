@@ -70,7 +70,7 @@ public class NetworkController implements ActionListener {
 					}
 					
 					else if(e.getActionCommand().equals("Local")) {
-						model.setRoutingAlgorithm(RoutingAlgorithm.ADAPTIVE);
+						model.setRoutingAlgorithm(RoutingAlgorithm.BETTER_RANDOM);
 					}
 				}
 			};

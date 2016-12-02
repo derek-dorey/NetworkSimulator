@@ -161,7 +161,7 @@ public class AlgorithmTest extends TestCase
 	{
 		boolean test = false;
 		
-		Network network = new Network(RoutingAlgorithm.ADAPTIVE);
+		Network network = new Network(RoutingAlgorithm.BETTER_RANDOM);
 		
 		network.createNode("nodeA");
 		network.createNode("nodeB");

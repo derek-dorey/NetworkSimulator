@@ -70,5 +70,10 @@ public class ShortestPathRouter implements Router {
 		}
 		return false;
 	}
+	
 
+	@Override
+	public RoutingAlgorithm getAlgorithm() {
+		return RoutingAlgorithm.SHORTEST_PATH;
+	}
 }

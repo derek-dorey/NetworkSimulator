@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import core.routing.Router;
@@ -218,8 +219,18 @@ public class NetworkNode {
 	}
 
 	public Node toXml(Document doc) {
-		// TODO Auto-generated method stub
-		return null;
+		Element elm = doc.createElement("Node");
+		elm.setAttribute("id", id);
+		elm.setAttribute("router", router.getAlgorithm().name());
+		
+		Element ms = doc.createElement("Messages");
+		elm.appendChild(ms);
+		
+		for(Message m : queue){
+			ms.appendChild(m.toXml(doc));
+		}
+		
+		return elm;
 	}
 	
 	public boolean hasNeighbours() {
