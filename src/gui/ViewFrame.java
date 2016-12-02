@@ -121,6 +121,7 @@ public class ViewFrame extends JFrame {
 		gbc_btnStep.gridy = 1;
 		contentPane.add(btnStep, gbc_btnStep);
 		
+		
 	}
 	public JButton getBtnUndo() {
 		return btnUndo;
