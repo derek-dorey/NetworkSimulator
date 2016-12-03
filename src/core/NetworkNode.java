@@ -11,8 +11,10 @@ import java.util.Set;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import core.routing.Router;
+import core.routing.RoutingAlgorithm;
 
 /**
  * This class adds connections, removes connections from nodes, 
@@ -48,6 +50,38 @@ public class NetworkNode {
 		queue = new LinkedList<>();
 	}
 	
+	
+	public static NetworkNode fromXml(Element item, Network network) {
+		if("Node".equals(item.getTagName())){
+			NetworkNode n = new NetworkNode(item.getAttribute("id"), network);
+			n.router = RoutingAlgorithm.valueOf(RoutingAlgorithm.class, item.getAttribute("router")).getRouter(n);
+			NodeList msgs = item.getChildNodes();
+			for(int i = 0; i<msgs.getLength(); i++){
+				if(msgs.item(i).getNodeType() == Node.ELEMENT_NODE){
+					Message m = Message.fromXml((Element) msgs.item(i));
+					if(m != null){
+						n.queue.add(m);
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public Node toXml(Document doc) {
+		Element elm = doc.createElement("Node");
+		elm.setAttribute("id", id);
+		elm.setAttribute("router", router.getAlgorithm().name());
+		
+		Element ms = doc.createElement("Messages");
+		elm.appendChild(ms);
+		
+		for(Message m : queue){
+			ms.appendChild(m.toXml(doc));
+		}
+		
+		return elm;
+	}
 	/**
 	 * checks if the two new neighbours are connected
 	 * 
@@ -218,20 +252,6 @@ public class NetworkNode {
 		this.router = router;
 	}
 
-	public Node toXml(Document doc) {
-		Element elm = doc.createElement("Node");
-		elm.setAttribute("id", id);
-		elm.setAttribute("router", router.getAlgorithm().name());
-		
-		Element ms = doc.createElement("Messages");
-		elm.appendChild(ms);
-		
-		for(Message m : queue){
-			ms.appendChild(m.toXml(doc));
-		}
-		
-		return elm;
-	}
 	
 	public boolean hasNeighbours() {
 		return !neighbours.isEmpty();

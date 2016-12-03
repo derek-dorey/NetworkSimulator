@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.Node;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -68,15 +69,83 @@ public class Network {
 		this.messageIdsBySourceAndDestination = new HashMap<>();
 		this.finishedMessages = new HashMap<>();
 	}
-	
-	private Network(Document doc){
-		
-	}
-	
+
 	public static Network fromXml(InputStream in) throws SAXException, IOException, ParserConfigurationException{
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
 		doc.getDocumentElement().normalize();
 		return new Network(doc);
+	}
+	
+	private Network(Document doc){
+		Element rootElement = (Element) doc.getElementsByTagName("Network").item(0);
+		
+		//Set field values
+		this.stepNumber = Integer.valueOf(rootElement.getAttribute("StepNumber"));
+		this.messageCreationPeriod = Integer.valueOf(rootElement.getAttribute("MessageCreationPeriod"));
+		this.messageNumber = Integer.valueOf(rootElement.getAttribute("MessageNumber"));
+		this.routingAlg = RoutingAlgorithm.valueOf(RoutingAlgorithm.class, rootElement.getAttribute("RoutingAlg"));
+		
+		//recreate message metadata
+		NodeList messageListing = doc.getElementsByTagName("MessageListing").item(0).getChildNodes();
+        for(int i = 0; i<messageListing.getLength(); i++){
+        	if(messageListing.item(i).getNodeType() == Node.ELEMENT_NODE && "NodeInfo".equals(((Element)messageListing.item(i)).getTagName())){
+        		Element nodeInfo = (Element) messageListing.item(i);
+        		List<Integer> ids = new ArrayList<>();
+        		for(String id : nodeInfo.getAttribute("ids").split(",")){
+        			ids.add(Integer.valueOf(id));
+        		}
+        		String from = nodeInfo.getAttribute("from");
+        		String to = nodeInfo.getAttribute("to");
+        		
+        		if(messageIdsBySourceAndDestination.get(from)==null){
+        			messageIdsBySourceAndDestination.put(from, new HashMap<>());
+        		}
+        		if(messageIdsBySourceAndDestination.get(from).get(to)==null){
+        			messageIdsBySourceAndDestination.get(from).put(to, new HashSet<>());
+        		}
+        		messageIdsBySourceAndDestination.get(from).get(to).addAll(ids);
+        	}
+        }
+        
+        //recreate finished messages
+        NodeList finishedMessages = doc.getElementsByTagName("FinishedMessages").item(0).getChildNodes();
+        for(int i = 0; i<finishedMessages.getLength(); i++){
+        	if(finishedMessages.item(i).getNodeType() == Node.ELEMENT_NODE && "FinishedId".equals(((Element)finishedMessages.item(i)).getTagName())){
+        		Element finishedId = (Element) finishedMessages.item(i);
+        		int id = Integer.valueOf(finishedId.getAttribute("id"));
+        		this.finishedMessages.put(id, new HashSet<>());
+        		NodeList msgs = finishedId.getChildNodes();
+        		for(int j = 0; j<msgs.getLength(); j++){
+        			if(msgs.item(j).getNodeType() == Node.ELEMENT_NODE){
+	        			Message m = Message.fromXml((Element) msgs.item(j));
+	        			if(m != null){
+	        				this.finishedMessages.get(id).add(m);
+	        			}
+        			}
+        		}
+        	}
+        }
+        
+        //recreate nodes
+        NodeList nodes = doc.getElementsByTagName("Nodes").item(0).getChildNodes();
+        for(int i = 0; i<nodes.getLength(); i++){
+        	if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
+	        	NetworkNode n = NetworkNode.fromXml((Element) nodes.item(i), this);
+	        	if(n!=null){
+	        		networkNodes.put(n.getId(), n);
+	        	}
+        	}
+        }
+        
+        //recreate connections
+        NodeList connections = doc.getElementsByTagName("Connections").item(0).getChildNodes();
+        for(int i = 0; i<connections.getLength(); i++){
+        	if(connections.item(i).getNodeType() == Node.ELEMENT_NODE && "Connection".equals(((Element)connections.item(i)).getTagName())){
+        		Element connection = (Element) connections.item(i); 
+        		connectNodes(connection.getAttribute("Node1"), connection.getAttribute("Node2"));
+        	}
+        }
+        
 	}
 	
 	public void toXml(OutputStream out) throws ParserConfigurationException{
@@ -85,10 +154,10 @@ public class Network {
 		//store the network's primitive fields
 		Element rootElement = doc.createElement("Network");
         doc.appendChild(rootElement);
-        rootElement.setAttribute("stepNumber", Integer.valueOf(stepNumber).toString());
-        rootElement.setAttribute("messageCreationPeriod", Integer.valueOf(messageCreationPeriod).toString());
-        rootElement.setAttribute("routingAlg", routingAlg.toString());
-        rootElement.setAttribute("messageNumber", Integer.valueOf(messageNumber).toString());
+        rootElement.setAttribute("StepNumber", Integer.valueOf(stepNumber).toString());
+        rootElement.setAttribute("MessageCreationPeriod", Integer.valueOf(messageCreationPeriod).toString());
+        rootElement.setAttribute("RoutingAlg", routingAlg.name());
+        rootElement.setAttribute("MessageNumber", Integer.valueOf(messageNumber).toString());
         
         //store the metaData about the messages that have been sent
         //ie: source destination, id Number
@@ -96,7 +165,7 @@ public class Network {
         rootElement.appendChild(messageListing);
         for(String from : messageIdsBySourceAndDestination.keySet()){
         	for(String to : messageIdsBySourceAndDestination.get(from).keySet()){
-                Element nodeInfo = doc.createElement("nodeInfo");
+                Element nodeInfo = doc.createElement("NodeInfo");
                 messageListing.appendChild(nodeInfo);
                 nodeInfo.setAttribute("from", from);
                 nodeInfo.setAttribute("to", to);
@@ -114,7 +183,7 @@ public class Network {
         for(Integer id : this.finishedMessages.keySet()){
         	Element finishedId = doc.createElement("FinishedId");
         	finishedMessages.appendChild(finishedId);
-        	finishedId.setAttribute("Id", id.toString());
+        	finishedId.setAttribute("id", id.toString());
         	for(Message m : this.finishedMessages.get(id)){
         		finishedId.appendChild(m.toXml(doc));
         	}
@@ -335,16 +404,17 @@ public class Network {
 	 * @param messageId the messageID of the messages that you are looking for
 	 * @return Set of paths of nodeIDs
 	 */
-	public Set<List<String>> getMessagePathsById(int messageId) {
-		if(finishedMessages.containsKey(Integer.valueOf(messageId))){
-			Set<List<String>> output = new HashSet<>();
-			for(Message m : finishedMessages.get(Integer.valueOf(messageId))){
-				output.add(m.getHistory());
-			}
-			return output;
-		}
-		return null;
-	}
+	//UNDUSED
+	//public Set<List<String>> getMessagePathsById(int messageId) {
+	//	if(finishedMessages.containsKey(Integer.valueOf(messageId))){
+	//		Set<List<String>> output = new HashSet<>();
+	//		for(Message m : finishedMessages.get(Integer.valueOf(messageId))){
+	//			output.add(m.getHistory());
+	//		}
+	//		return output;
+	//	}
+	//	return null;
+	//}
 	
 	/**
 	 * @param messageId the id of the message that you want the source of
@@ -391,7 +461,6 @@ public class Network {
 		}else{
 			period = 1;
 		}
-		
 	}
 	
 	/**

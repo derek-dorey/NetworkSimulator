@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Makes a print statement for the user that displays the start and destination
@@ -120,8 +122,31 @@ public class Message {
 		return history.size()-1;
 	}
 
-	public Node toXml(Document doc) {
-		// TODO Auto-generated method stub
+	public Element toXml(Document doc) {
+		Element elm = doc.createElement("Message");
+		elm.setAttribute("id", Integer.valueOf(id).toString());
+		elm.setAttribute("sender", sender);
+		elm.setAttribute("destination", dest);
+		Element hist = doc.createElement("history");
+		for(String s : history){
+			Element hop = doc.createElement("hop");
+			hop.setAttribute("id", s);
+			hist.appendChild(hop);
+		}
+		return elm;
+	}
+
+	public static Message fromXml(Element item) {
+		if("Message".equals(item.getTagName())){
+			Message m = new Message(Integer.valueOf(item.getAttribute("id")),item.getAttribute("sender"),item.getAttribute("destination"));
+			NodeList hist = item.getElementsByTagName("history").item(0).getChildNodes();
+			for(int i = 0; i<hist.getLength(); i++){
+				if(hist.item(i).getNodeType() == Node.ELEMENT_NODE && "Message".equals(((Element)hist.item(i)).getTagName())){
+					m.history.add(((Element)hist.item(i)).getAttribute("id"));
+				}
+			}
+			return m;
+		}
 		return null;
 	}
 }
