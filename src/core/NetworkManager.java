@@ -41,7 +41,7 @@ public class NetworkManager {
 	public void connectNodes(String idA, String idB) {
 		nodeNetwork.connectNodes(idA, idB);
 		for(NetworkListener n: networkListeners){
-			n.disconnectNodes(idA, idB);
+			n.connectNodes(idA, idB);
 		}
 
 	}
