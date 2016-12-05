@@ -3,9 +3,9 @@ Bits please
 
 Members:
 	Denis Atikpladza		    100938122
-	Benjamin Tobalt				100936576
-	Derek Dorey					100956400
-	Griffin Szymanski-Barrett	100978435
+	Benjamin Tobalt			    100936576
+	Derek Dorey			    100956400
+	Griffin Szymanski-Barrett	    100978435
 
 ===========================================================================================================================
 
