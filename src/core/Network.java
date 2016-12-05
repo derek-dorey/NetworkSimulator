@@ -350,6 +350,11 @@ public class Network {
 		}
 	}
 	
+	/**
+	 * Getter for node ID's
+	 * 
+	 * @return string of node ID's or return the Nodes
+	 */
 	public ArrayList<String> getNodes() {
 		
 		ArrayList<String> returnNodes = new ArrayList<String>();
@@ -609,6 +614,11 @@ public class Network {
 		System.out.println("From:"+m.getSender()+" to:"+m.getDestination()+" av. transmitions:"+this.getAverageTransmitions(m.getSender(), m.getDestination()));
 	}
 	
+	/**
+	 * Getter for the nodes in the network
+	 * 
+	 * @return networkNodes
+	 */
 	public Map<String,NetworkNode> getNetworkNodes() {
 		return networkNodes;
 	}

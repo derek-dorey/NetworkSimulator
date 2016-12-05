@@ -1,5 +1,6 @@
 package testing;
 
+import java.util.ArrayList;
 import core.Network;
 import core.routing.RoutingAlgorithm;
 import junit.framework.TestCase;
@@ -13,6 +14,22 @@ public class NetworkTests extends TestCase
 {
 	Network network = new Network(RoutingAlgorithm.RANDOM);
 	
+	
+	public void testgetNodes()
+	{
+		boolean temp = false;
+		network.createNode("nodeA");
+		
+		for (String s : network.getNodes())
+		{
+		    if(s.equals("nodeA"))
+		    {
+		    	temp = true;
+		    }
+		}
+		assertEquals(temp, true);
+		
+	}
 	
 	public void testCreateNode(){
 		boolean temp = false;
@@ -71,6 +88,17 @@ public class NetworkTests extends TestCase
 		assertEquals(true,network.disconnectNodes("nodeA", "nodeB"));
 	}
 	
+	public void testosAconnectedGraph()
+	{
+		network.createNode("nodeA");
+		network.createNode("nodeB");
+		network.createNode("nodeC");
+		network.connectNodes("nodeA", "nodeB");
+		network.connectNodes("nodeC", "nodeB");
+		assertEquals(true,network.isAConnectedGraph());
+		
+	}
+	
 	public void testDisconnectAllNodes(){
 		network.createNode("nodeA");
 		network.createNode("nodeB");
@@ -78,6 +106,7 @@ public class NetworkTests extends TestCase
 		network.disconnectAllNodes();
 		assertFalse(network.isAConnectedGraph());
 	}
+	
 	
 	public void teststep()
 	{
