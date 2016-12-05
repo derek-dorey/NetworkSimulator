@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.Component;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -63,10 +65,14 @@ public class GraphHandler implements NetworkListener{
 		
 		Node nodeVertex = graph.addNode(id);
 		nodeVertex.addAttribute("ui.class", "Node");
-		nodeVertex.addAttribute("ui.label", id);
+		setNodeLabel(nodeVertex, Collections.emptyList());
 				
 	}
 
+	private void setNodeLabel(Node node, List<Integer> queue){
+		node.addAttribute("ui.label", node.getId()+" "+Arrays.toString(queue.toArray()));
+	}
+	
 	@Override
 	public void destroyNode(String id) {
 		graph.removeNode(id);
@@ -84,8 +90,12 @@ public class GraphHandler implements NetworkListener{
 
 	@Override
 	public void updateMessages(Map<String, List<Integer>> status) {
-		// TODO Auto-generated method stub
-		
+		for(String nodeId : status.keySet()){
+			Node n = graph.getNode(nodeId);
+			if(n!=null){
+				setNodeLabel(n,status.get(nodeId));
+			}
+		}
 	}
 
 	@Override

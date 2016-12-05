@@ -1,10 +1,14 @@
 package core;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import core.routing.RoutingAlgorithm;
@@ -71,9 +75,9 @@ public class NetworkManager {
 	
 	public void save(OutputStream out) {
 		try {
-			nodeNetwork.toXml(out);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+			out.write(nodeNetwork.toXml().getBytes());
+		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 	}
 	
@@ -84,7 +88,8 @@ public class NetworkManager {
 	@SuppressWarnings("static-access")
 	public void load(InputStream in) {
 		try {
-			nodeNetwork.fromXml(in);
+			nodeNetwork.fromXml(new BufferedReader(new InputStreamReader(in))
+					  .lines().collect(Collectors.joining("\n")));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -98,9 +103,6 @@ public class NetworkManager {
 	public void setRate(int rate) {
 		if(rate>0) {
 			nodeNetwork.setMessageCreationPeriod(rate);
-			
-		}else{
-			return;
 		}
 	}
 

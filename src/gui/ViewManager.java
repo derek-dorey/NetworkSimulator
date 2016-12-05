@@ -82,8 +82,7 @@ public class ViewManager {
 		viewFrame.getBtnSave().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//set default directory for saved files
-				String filePath = System.getProperty("user.dir") + "/SavedFiles/";
+				String filePath = ".\\SavedFiles\\";
 				
 				JFileChooser fileSaver = new JFileChooser();
 				fileSaver.setCurrentDirectory(new File(filePath));

@@ -1,21 +1,20 @@
 package core;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import javax.swing.JOptionPane;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
@@ -70,8 +69,8 @@ public class Network {
 		this.finishedMessages = new HashMap<>();
 	}
 
-	public static Network fromXml(InputStream in) throws SAXException, IOException, ParserConfigurationException{
-		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(in);
+	public static Network fromXml(String in) throws SAXException, IOException, ParserConfigurationException{
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(in.getBytes(StandardCharsets.UTF_8)));
 		doc.getDocumentElement().normalize();
 		return new Network(doc);
 	}
@@ -148,7 +147,7 @@ public class Network {
         
 	}
 	
-	public void toXml(OutputStream out) throws ParserConfigurationException{
+	public String toXml() throws ParserConfigurationException, TransformerConfigurationException{
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		
 		//store the network's primitive fields
@@ -220,38 +219,18 @@ public class Network {
         
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         
-        try {
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new StringWriter());
-			
-			try {
-				transformer.transform(source, result);
-			} catch (TransformerException e) {
-				e.printStackTrace();
-			}
-			
-			String xmlString = result.getWriter().toString();
-			System.out.println(xmlString);
-			byte[] bytesForStream = xmlString.getBytes();
-			
-			try {
-				out.write(bytesForStream);
-				out.flush();
-			} catch (IOException io) {
-				io.printStackTrace();
-			} finally {
-				try {
-					if (out != null) {
-						out.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}	
-		} catch (TransformerConfigurationException e) {
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		StreamResult result = new StreamResult(new StringWriter());
+		
+		try {
+			transformer.transform(source, result);
+		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
+		
+		return result.getWriter().toString();
+			
 	}
 	
 	/**
