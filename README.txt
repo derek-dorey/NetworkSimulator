@@ -1,7 +1,8 @@
 SYSC 3110 
 Bits please
 
-Members:Denis Atikpladza		100938122
+Members:
+	Denis Atikpladza		    100938122
 	Benjamin Tobalt				100936576
 	Derek Dorey					100956400
 	Griffin Szymanski-Barrett	100978435
@@ -35,18 +36,27 @@ has to get to it's target.
 Finally we have implemented the xml export and import to resort a previous network and to save 
 a network which one wishes to save. We have done this through the gui using a new button called "save".
   
-
 ==========================================================================================================================
 
 For this iteration our design decisions were:
 
+To filter through all comments made on previous iterations and ensure that weaddress anything that was an 
+outstanding issue. Also refactoring the code and removing all "code smells" was very important as well so our 
+implementation of this iteration was strongly influenced by this. 
 
+The design decisions for the xml portion of this iteration was: 
 
-To filter through all comments made on previous iterations and ensure that we
-address anything that was an outstanding issue. Also refactoring the code and removing
-all "code smells" was very important as well so our implementation of this iteration was strongly
-influenced by this.
+To implement it through the use of two Jbuttons. The 'save' button parses the data of the network 
+serializes it then save it as a xml file. The 'load' button opens a file explore window which allows the user to select 
+the xml file to be opened. The program then parses the file and normalizes its contents and restores that 
+file's network topography.
 
+Some refactoring design decisions were:
+
+The gui was rebuilt this iteration using a new Java library 'graphstream'. 
+This was done to better conform to the MVC design pattern, the user manual and UML diagram have been updated to show 
+these changes. 
+ 
 More test cases were provided to test the network class and all the algorithms more accurately.
 
 ===========================================================================================================================
