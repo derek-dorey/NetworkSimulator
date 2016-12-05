@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -104,6 +107,17 @@ public class NetworkManager {
 		if(rate>0) {
 			nodeNetwork.setMessageCreationPeriod(rate);
 		}
+	}
+	
+	public Map<String, List<Integer>> getBuffers() {
+		
+		Map<String, List<Integer>> nodeBuffers = new HashMap<String, List<Integer>>();
+		
+		for(String nodeID : nodeNetwork.getNodes()) {
+			nodeBuffers.put(nodeID, nodeNetwork.getMessageBufferFromNode(nodeID));
+		}
+		
+		return nodeBuffers;	
 	}
 
 	public void registerNetwork(Network network) {
