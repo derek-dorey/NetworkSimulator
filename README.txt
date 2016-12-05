@@ -17,43 +17,37 @@ Currently we have implemented the random algorithm, flooding algorithm, shortest
 A brief description of the the algorithms are provided below.
 
 Random algorithm:
-when a message is recieved, it forwards it to a random neighbor.
+when a message is received, it forwards it to a random neighbor.
 
 Flooding algorithm:
-when a a message is recieved it forwards the message to all of its neighbors except the one
+when a a message is received it forwards the message to all of its neighbors except the one
 it came from. 
 
 Shortest path algorithm:
 the routing tables are configured globally to deliver messages using the least
 amount of intermediate nodes (a.k.a hops).
 
-Local algorithm:
-???
+Better random algorithm:
+This algorithm will "learn" about the network it is in and gets better over time by
+recording where it has been before and will not go back there unless it absolutely 
+has to get to it's target.
 
-
-In a later development we will implement the xml export and import to resort a previous network and to save a network
-which one wishes to save. We plan to implement this using in the gui using two new Jbuttons or utilize a drop down menu.
-Next iteration we will also be implementing the step back functionality to the simulator.  
+Finally we have implemented the xml export and import to resort a previous network and to save 
+a network which one wishes to save. We have done this through the gui using a new button called "save".
+  
 
 ==========================================================================================================================
 
 For this iteration our design decisions were:
 
-A new gui was implemented using the Jgraph library and the network was heavily refactored from last iteration to better 
-conform with MVC (Model View Controller). The gui now shows the network graph and the a more detailed output as requested from 
-last iteration. The gui is update with respect to the networks model. Error messages have been added to the error handling
-and more error cases have been implemented.
 
-The flooding algorithm messages have a living time (number of hops) which when exceeded the message is removed. This
-algorithm avoids infinite loops by not allowing a message to re-enter the same path twice.
 
-The random algorithm has stayed the same since the last iterations it still uses a randomly generated number to determine which 
-neighbor the message will be sent to next.
+To filter through all comments made on previous iterations and ensure that we
+address anything that was an outstanding issue. Also refactoring the code and removing
+all "code smells" was very important as well so our implementation of this iteration was strongly
+influenced by this.
 
-More test cases were provided to test the added added code. 
-
-***The Network has the implimentations and calculations of the metrics but the GUI does not display them, we could not put
-them into the GUI in time.***
+More test cases were provided to test the network class and all the algorithms more accurately.
 
 ===========================================================================================================================
 
