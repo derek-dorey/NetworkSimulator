@@ -40,7 +40,7 @@ a network which one wishes to save. We have done this through the gui using a ne
 
 For this iteration our design decisions were:
 
-To filter through all comments made on previous iterations and ensure that weaddress anything that was an 
+To filter through all comments made on previous iterations and ensure that we address anything that was an 
 outstanding issue. Also refactoring the code and removing all "code smells" was very important as well so our 
 implementation of this iteration was strongly influenced by this. 
 
