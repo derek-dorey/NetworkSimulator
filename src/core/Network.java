@@ -558,7 +558,7 @@ public class Network {
 			NetworkNode origen = networkNodes.values().iterator().next();
 			visited.add(origen.getId());
 			isAConnectedGraphRecursive(origen, visited);
-			return networkNodes.keySet().containsAll(visited);
+			return visited.containsAll(networkNodes.keySet());
 		}
 		return false;
 	}
