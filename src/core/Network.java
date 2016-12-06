@@ -441,7 +441,7 @@ public class Network {
 	public void setRoutingAlgorithm(RoutingAlgorithm alg) {
 		clearNetworkHistory();
 		for(NetworkNode n : networkNodes.values()){
-			setRoutingAlgorithm(routingAlg, n);
+			setRoutingAlgorithm(alg, n);
 		}
 	}
 	
@@ -527,19 +527,11 @@ public class Network {
 			int count = 0;
 			Set<Integer> ids = messageIdsBySourceAndDestination.get(sourceId).get(destinationId);
 			for(Integer id : ids){
-				if(finishedMessages.containsKey(id)){
-					long miniRunningTotal = 0;
-					boolean good = false;
+				if(finishedMessages.containsKey(id) && !this.messageFloating(id)){
 					for(Message m : finishedMessages.get(id)){
-						miniRunningTotal += m.hops();
-						if(m.received()){
-							good = true;
-						}
+						runningTotal+= m.hops();
 					}
-					if(good){
-						runningTotal+=miniRunningTotal;
-						count++;
-					}
+					count++;
 				}
 			}
 			if(count > 0){
@@ -625,8 +617,6 @@ public class Network {
 			finishedMessages.put(m.getId(), new HashSet<>());
 		}
 		finishedMessages.get(m.getId()).add(m);
-		System.out.println("From:"+m.getSender()+" to:"+m.getDestination()+" av. hops:"+this.getAverageHops(m.getSender(), m.getDestination()));
-		System.out.println("From:"+m.getSender()+" to:"+m.getDestination()+" av. transmitions:"+this.getAverageTransmitions(m.getSender(), m.getDestination()));
 	}
 	
 	/**
