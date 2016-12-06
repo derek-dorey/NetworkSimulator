@@ -26,65 +26,77 @@ public class NetworkManager {
 		networkListeners.add(nl);
 	}
 	
-	public void createNode(String id) {
+	public boolean createNode(String id) {
 		recordHistory();
 		if(nodeNetwork.createNode(id)){
 			for(NetworkListener n: networkListeners){
 				n.createNode(id);
 			}
+			return true;
 		}
+		return false;
 	}
 	
-	public void destroyNode(String id) {
+	public boolean destroyNode(String id) {
 		recordHistory();
 		if(nodeNetwork.destroyNode(id)){
 			for(NetworkListener n: networkListeners){
 				n.destroyNode(id);
 			}
+			return true;
 		}
+		return false;
 	}
 	
-	public void connectNodes(String idA, String idB) {
+	public boolean connectNodes(String idA, String idB) {
 		recordHistory();
 		if(nodeNetwork.connectNodes(idA, idB)){
 			for(NetworkListener n: networkListeners){
 				n.connectNodes(idA, idB);
 			}
+			return true;
 		}
+		return false;
 	}
 	
-	public void disconnectNodes(String idA, String idB) {
+	public boolean disconnectNodes(String idA, String idB) {
 		recordHistory();
 		if(nodeNetwork.disconnectNodes(idA, idB)){
 			for(NetworkListener n: networkListeners){
 				n.disconnectNodes(idA, idB);
 			}
+			return true;
 		}
-	
+		return false;
 	}
 	
-	public void step() {
+	public boolean step() {
 		recordHistory();
-		nodeNetwork.step();
-		
-		Map<String, List<Integer>> status = getNetworkBuffers();
-		for(NetworkListener n: networkListeners){
-			n.updateMessages(status);
-		} 
-	}
-	
-	
-	public void undo() {
-		if(!history.isEmpty()){
-			load(history.pop());
+		if(nodeNetwork.step()){
+			Map<String, List<Integer>> status = getNetworkBuffers();
+			for(NetworkListener n: networkListeners){
+				n.updateMessages(status);
+			}
+			return true;
 		}
+		return false;
 	}
 	
-	public void save(OutputStream out) {
+	
+	public boolean undo() {
+		if(!history.isEmpty()){
+			return load(history.pop());
+		}
+		return false;
+	}
+	
+	public boolean save(OutputStream out) {
 		try {
 			out.write(nodeNetwork.toXml().getBytes());
+			return true;
 		} catch (Throwable t) {
 			t.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -93,14 +105,12 @@ public class NetworkManager {
 		nodeNetwork.setRoutingAlgorithm(alg);
 	}
 	
-	public void load(String in) {
+	public boolean load(String in) {
 		Network temp;
 		try {
 			temp = Network.fromXml(in);
 		} catch (Throwable t) {
-			System.err.println("Network reload failed.");
-			t.printStackTrace();
-			return;
+			return false;
 		}
 		nodeNetwork = temp;
 		Map<String,List<Integer>> status = getNetworkBuffers();
@@ -117,6 +127,7 @@ public class NetworkManager {
 			}
 			n.updateMessages(status);
 		}
+		return true;
 		
 	}
 	
