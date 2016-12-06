@@ -1,6 +1,5 @@
 package testing;
 
-import java.util.ArrayList;
 import core.Network;
 import core.routing.RoutingAlgorithm;
 import junit.framework.TestCase;
