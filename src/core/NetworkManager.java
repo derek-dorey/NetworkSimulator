@@ -1,9 +1,5 @@
 package core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,12 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.xml.sax.SAXException;
 import core.routing.RoutingAlgorithm;
 
 public class NetworkManager {
@@ -82,7 +76,9 @@ public class NetworkManager {
 	
 	
 	public void undo() {
-		//nodeNetwork.undo();
+		if(!history.isEmpty()){
+			load(history.pop());
+		}
 	}
 	
 	public void save(OutputStream out) {
@@ -98,18 +94,31 @@ public class NetworkManager {
 		nodeNetwork.setRoutingAlgorithm(alg);
 	}
 	
-	public void load(InputStream in) {
+	public void load(String in) {
+		Network temp;
 		try {
-			nodeNetwork = Network.fromXml(new BufferedReader(new InputStreamReader(in))
-					  .lines().collect(Collectors.joining("\n")));
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
+			temp = Network.fromXml(in);
+		} catch (Throwable t) {
+			System.err.println("Network reload failed.");
+			t.printStackTrace();
+			return;
 		}
+		nodeNetwork = temp;
+		Map<String,List<Integer>> status = getNetworkBuffers();
+		
+		for(NetworkListener n: networkListeners){
+			n.clearAll();
+			for(String nodeId : nodeNetwork.getNodes()){
+				n.createNode(nodeId);
+			}
+			for(String nodeId : nodeNetwork.getNodes()){
+				for(String nodeId2 : nodeNetwork.getNodeNeighbors(nodeId)){
+					n.connectNodes(nodeId, nodeId2);
+				}
+			}
+			n.updateMessages(status);
+		}
+		
 	}
 	
 	public void setRate(int rate) {

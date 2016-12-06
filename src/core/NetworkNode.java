@@ -55,7 +55,7 @@ public class NetworkNode {
 		if("Node".equals(item.getTagName())){
 			NetworkNode n = new NetworkNode(item.getAttribute("id"), network);
 			n.router = RoutingAlgorithm.valueOf(RoutingAlgorithm.class, item.getAttribute("router")).getRouter(n);
-			NodeList msgs = item.getChildNodes();
+			NodeList msgs = item.getElementsByTagName("Messages").item(0).getChildNodes();
 			for(int i = 0; i<msgs.getLength(); i++){
 				if(msgs.item(i).getNodeType() == Node.ELEMENT_NODE){
 					Message m = Message.fromXml((Element) msgs.item(i));
@@ -64,6 +64,7 @@ public class NetworkNode {
 					}
 				}
 			}
+			return n;
 		}
 		return null;
 	}
@@ -180,7 +181,7 @@ public class NetworkNode {
 	public void flushBuffer(){
 		for(Message m : buffer){
 			m.recordNode(getId());
-			queue.push(m);
+			queue.add(m);
 		}
 		buffer = new HashSet<>();
 	}

@@ -2,10 +2,13 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -50,8 +53,8 @@ public class ViewManager {
 		viewFrame.getBtnConnect().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String firstNode = JOptionPane.showInputDialog(null, "Node A:", null, JOptionPane.PLAIN_MESSAGE);
-				String secondNode = JOptionPane.showInputDialog(null, "Node A:", null, JOptionPane.PLAIN_MESSAGE);
+				String firstNode = JOptionPane.showInputDialog(null, "Node ID 1:", null, JOptionPane.PLAIN_MESSAGE);
+				String secondNode = JOptionPane.showInputDialog(null, "Node ID 2:", null, JOptionPane.PLAIN_MESSAGE);
 				networkManager.connectNodes(firstNode, secondNode);
 			}
 		});
@@ -59,8 +62,8 @@ public class ViewManager {
 		viewFrame.getBtnDisconnect().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String firstNode = JOptionPane.showInputDialog(null, "Node A:", null, JOptionPane.PLAIN_MESSAGE);
-				String secondNode = JOptionPane.showInputDialog(null, "Node A:", null, JOptionPane.PLAIN_MESSAGE);
+				String firstNode = JOptionPane.showInputDialog(null, "Node ID 1:", null, JOptionPane.PLAIN_MESSAGE);
+				String secondNode = JOptionPane.showInputDialog(null, "Node ID 2:", null, JOptionPane.PLAIN_MESSAGE);
 				networkManager.disconnectNodes(firstNode, secondNode);
 			}
 		});
@@ -127,7 +130,8 @@ public class ViewManager {
 					Path p = selection.toPath();
 					
 					try {
-						networkManager.load(Files.newInputStream(p));
+						networkManager.load(new BufferedReader(new InputStreamReader(Files.newInputStream(p)))
+								  .lines().collect(Collectors.joining("\n")));
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -164,7 +168,7 @@ public class ViewManager {
 	
 	public static void main(String[] args) {
 		
-		ViewManager manager = new ViewManager(new NetworkManager());
+		new ViewManager(new NetworkManager());
 	}
 	
 	

@@ -128,6 +128,7 @@ public class Message {
 		elm.setAttribute("sender", sender);
 		elm.setAttribute("destination", dest);
 		Element hist = doc.createElement("history");
+		elm.appendChild(hist);
 		for(String s : history){
 			Element hop = doc.createElement("hop");
 			hop.setAttribute("id", s);

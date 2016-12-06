@@ -85,7 +85,26 @@ public class Network {
 		this.messageCreationPeriod = Integer.valueOf(rootElement.getAttribute("MessageCreationPeriod"));
 		this.messageNumber = Integer.valueOf(rootElement.getAttribute("MessageNumber"));
 		this.routingAlg = RoutingAlgorithm.valueOf(RoutingAlgorithm.class, rootElement.getAttribute("RoutingAlg"));
-		
+
+        //recreate nodes
+        NodeList nodes = doc.getElementsByTagName("Nodes").item(0).getChildNodes();
+        for(int i = 0; i<nodes.getLength(); i++){
+        	if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
+	        	NetworkNode n = NetworkNode.fromXml((Element) nodes.item(i), this);
+	        	if(n!=null){
+	        		networkNodes.put(n.getId(), n);
+	        	}
+        	}
+        }
+        
+        //recreate connections
+        NodeList connections = doc.getElementsByTagName("Connections").item(0).getChildNodes();
+        for(int i = 0; i<connections.getLength(); i++){
+        	if(connections.item(i).getNodeType() == Node.ELEMENT_NODE && "Connection".equals(((Element)connections.item(i)).getTagName())){
+        		Element connection = (Element) connections.item(i); 
+        		connectNodes(connection.getAttribute("Node1"), connection.getAttribute("Node2"));
+        	}
+        }
 		//recreate message metadata
 		NodeList messageListing = doc.getElementsByTagName("MessageListing").item(0).getChildNodes();
         for(int i = 0; i<messageListing.getLength(); i++){
@@ -127,25 +146,6 @@ public class Network {
         	}
         }
         
-        //recreate nodes
-        NodeList nodes = doc.getElementsByTagName("Nodes").item(0).getChildNodes();
-        for(int i = 0; i<nodes.getLength(); i++){
-        	if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE){
-	        	NetworkNode n = NetworkNode.fromXml((Element) nodes.item(i), this);
-	        	if(n!=null){
-	        		networkNodes.put(n.getId(), n);
-	        	}
-        	}
-        }
-        
-        //recreate connections
-        NodeList connections = doc.getElementsByTagName("Connections").item(0).getChildNodes();
-        for(int i = 0; i<connections.getLength(); i++){
-        	if(connections.item(i).getNodeType() == Node.ELEMENT_NODE && "Connection".equals(((Element)connections.item(i)).getTagName())){
-        		Element connection = (Element) connections.item(i); 
-        		connectNodes(connection.getAttribute("Node1"), connection.getAttribute("Node2"));
-        	}
-        }
         
 	}
 	
@@ -334,9 +334,9 @@ public class Network {
 	/**
 	 * Getter for node ID's
 	 * 
-	 * @return string of node ID's or return the Nodes
+	 * @return List of all valid node ids
 	 */
-	public ArrayList<String> getNodes() {
+	public List<String> getNodes() {
 		
 		ArrayList<String> returnNodes = new ArrayList<String>();
 		for(String nodeID: networkNodes.keySet()) {
@@ -344,6 +344,17 @@ public class Network {
 		}
 		
 		return returnNodes;
+	}
+	
+	/**
+	 * @return a set of neighbor ids to the supplied node, or null if the node does not exist
+	 */
+	public Set<String> getNodeNeighbors(String nodeId){
+		NetworkNode node = this.networkNodes.get(nodeId);
+		if(node == null){
+			return null;
+		}
+		return node.getNeighbourIds();
 	}
 	
 	/**
