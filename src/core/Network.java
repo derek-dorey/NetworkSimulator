@@ -529,7 +529,7 @@ public class Network {
 			for(Integer id : ids){
 				if(finishedMessages.containsKey(id) && !this.messageFloating(id)){
 					for(Message m : finishedMessages.get(id)){
-						runningTotal+= m.hops();
+						runningTotal+= m.getTransmitions();
 					}
 					count++;
 				}

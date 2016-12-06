@@ -24,6 +24,7 @@ public class Message {
 	private final String sender;
 	private final String dest;
 	private final List<String> history;
+	private int transmitions = 0;
 	
 	/**
 	 * Message Constructor
@@ -84,6 +85,15 @@ public class Message {
 	 */
 	public void recordNode(String nodeId){
 		history.add(nodeId);
+		this.transmitions++;
+	}
+	
+	/**
+	 * 
+	 * @return the number of transmitions that this instance of a message has undergone, this is NOT hops
+	 */
+	public int getTransmitions(){
+		return this.transmitions;
 	}
 	
 	/**
