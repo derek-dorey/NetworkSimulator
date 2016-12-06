@@ -198,6 +198,29 @@ public class ViewManager {
 				networkManager.setAlgorithm(algorithm);
 			}
 		});
+		
+		viewFrame.getBtnMetrics().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				double avgHops;
+				double avgTransmissions;
+				
+				String source = JOptionPane.showInputDialog(null, "Node ID 1:", null, JOptionPane.PLAIN_MESSAGE);
+				if(source == null){
+					return;
+				}
+				String destination = JOptionPane.showInputDialog(null, "Node ID 2:", null, JOptionPane.PLAIN_MESSAGE);
+			
+				if(destination != null) {
+					avgHops = networkManager.getHops(source, destination);
+					avgTransmissions = networkManager.getTransmissions(source, destination);
+
+					String hops = (avgHops < 0)?("unavailable"):(Double.valueOf(avgHops).toString());
+					String tran = (avgTransmissions < 0)?("unavailable"):(Double.valueOf(avgTransmissions).toString());
+					
+					JOptionPane.showMessageDialog(viewFrame, "Average hops is " + hops + "\nAverage transmissions is " + tran);
+				}
+			}
+		});
 
 	}
 	

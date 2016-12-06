@@ -138,6 +138,14 @@ public class NetworkManager {
 		}
 	}
 	
+	public double getHops(String source, String dest) {
+		return nodeNetwork.getAverageHops(source, dest);
+	}
+	
+	public double getTransmissions(String source, String dest) {
+		return nodeNetwork.getAverageTransmitions(source, dest);
+	}
+	
 	private Map<String, List<Integer>> getNetworkBuffers() {
 		
 		Map<String, List<Integer>> nodeBuffers = new HashMap<String, List<Integer>>();
@@ -157,6 +165,8 @@ public class NetworkManager {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	public void registerNetwork(Network network) {
 		nodeNetwork = network;
