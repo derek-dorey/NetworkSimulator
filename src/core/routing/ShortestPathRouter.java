@@ -44,13 +44,13 @@ public class ShortestPathRouter implements Router {
 		distances.put(node.getId(), Integer.valueOf(0));
 		checking.add(node.getId());
 
-		String curentId = node.getId();
-		while ((!checking.isEmpty()) && !m.getDestination().equals(curentId = checking.poll())) {
-			NetworkNode currentNode = nodes.get(curentId);
+		String currentId = node.getId();
+		while ((!checking.isEmpty()) && !m.getDestination().equals(currentId = checking.poll())) {
+			NetworkNode currentNode = nodes.get(currentId);
 			for (String id : currentNode.getNeighbourIds()) {
 				nodes.put(id, currentNode.getNeighbourFromId(id));
 				if (!distances.containsKey(id) || distances.get(id) < distances.get(currentNode)) {
-					path.put(id, curentId);
+					path.put(id, currentId);
 					distances.put(id, distances.get(currentNode) + 1);
 				}
 				if(!checking.contains(id)){
@@ -64,11 +64,11 @@ public class ShortestPathRouter implements Router {
 				}
 			}
 		}
-		if(m.getDestination().equals(curentId)){
-			String lastId = curentId;
-			while(!node.getId().equals(curentId)){
-				lastId = curentId;
-				curentId = path.get(curentId);
+		if(m.getDestination().equals(currentId)){
+			String lastId = currentId;
+			while(!node.getId().equals(currentId)){
+				lastId = currentId;
+				currentId = path.get(currentId);
 			}
 			Set<String> out = new HashSet<>();
 			out.add(lastId);

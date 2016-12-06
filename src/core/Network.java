@@ -324,8 +324,8 @@ public class Network {
 	 * calls disconnectNodes on each pair of connected nodes
 	 */
 	public void disconnectAllNodes() {
-		for(String nodeId1 : networkNodes.keySet()){
-			for(String nodeId2 : networkNodes.get(nodeId1).getNeighbourIds()){
+		for(String nodeId1 : new HashSet<>(networkNodes.keySet())){
+			for(String nodeId2 : new HashSet<>(networkNodes.get(nodeId1).getNeighbourIds())){
 				disconnectNodes(nodeId1, nodeId2);
 			}
 		}

@@ -70,8 +70,7 @@ public class NetworkManager {
 		Map<String, List<Integer>> status = getNetworkBuffers();
 		for(NetworkListener n: networkListeners){
 			n.updateMessages(status);
-		}
-	
+		} 
 	}
 	
 	
