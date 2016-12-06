@@ -34,18 +34,15 @@ public class ViewManager {
 		viewFrame.getBtnCreate().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String createName = new String();
-				boolean isSuccessful = false;
 				
+				String createName = new String();
 				createName = JOptionPane.showInputDialog(null, "Node ID:", null, JOptionPane.PLAIN_MESSAGE);
 				
 				if(createName==null) {
 					return;
 				}
 	
-				isSuccessful = networkManager.createNode(createName);
-			
-				if(!isSuccessful) {
+				if(!networkManager.createNode(createName)) {
 					JOptionPane.showMessageDialog(viewFrame, "Can't create node!");
 				}
 			}	
@@ -55,11 +52,9 @@ public class ViewManager {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				boolean isSuccessful = false;
 				String destroyName = JOptionPane.showInputDialog(null, "Node ID:", null, JOptionPane.PLAIN_MESSAGE);
-				isSuccessful = networkManager.destroyNode(destroyName);
 				
-				if(!isSuccessful) {
+				if(!networkManager.destroyNode(destroyName)) {
 					JOptionPane.showMessageDialog(viewFrame, "Can't destroy node!");
 				}
 			}
@@ -68,13 +63,11 @@ public class ViewManager {
 		viewFrame.getBtnConnect().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean isSuccessful = false;
 				String firstNode = JOptionPane.showInputDialog(null, "Node ID 1:", null, JOptionPane.PLAIN_MESSAGE);
 				String secondNode = JOptionPane.showInputDialog(null, "Node ID 2:", null, JOptionPane.PLAIN_MESSAGE);
-				isSuccessful = networkManager.connectNodes(firstNode, secondNode);
 				
-				if(!isSuccessful) {
-					JOptionPane.showMessageDialog(viewFrame, "Nodes can't be connected!");
+				if(firstNode == null || secondNode == null || !networkManager.connectNodes(firstNode, secondNode)) {
+					JOptionPane.showMessageDialog(viewFrame, "Connect failed.");
 				}
 			}
 		});
@@ -82,13 +75,12 @@ public class ViewManager {
 		viewFrame.getBtnDisconnect().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean isSuccessful = false;
+				
 				String firstNode = JOptionPane.showInputDialog(null, "Node ID 1:", null, JOptionPane.PLAIN_MESSAGE);
 				String secondNode = JOptionPane.showInputDialog(null, "Node ID 2:", null, JOptionPane.PLAIN_MESSAGE);
-				isSuccessful = networkManager.disconnectNodes(firstNode, secondNode);
 				
-				if(!isSuccessful) {
-					JOptionPane.showMessageDialog(viewFrame, "Nodes can't be disconnected!");
+				if(firstNode == null || secondNode == null || !networkManager.disconnectNodes(firstNode, secondNode)) {
+					JOptionPane.showMessageDialog(viewFrame, "Disconnect failed.");
 				}
 				
 			}
@@ -97,11 +89,9 @@ public class ViewManager {
 		viewFrame.getBtnStep().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean isSuccessful = false;
-				isSuccessful = networkManager.step();
 				
-				if(!isSuccessful) {
-					JOptionPane.showMessageDialog(viewFrame, "Can't step!");
+				if(!networkManager.step()) {
+					JOptionPane.showMessageDialog(viewFrame, "Step failed.");
 				}
 			}
 		});
@@ -109,11 +99,9 @@ public class ViewManager {
 		viewFrame.getBtnUndo().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean isSuccessful = false;
-				isSuccessful = networkManager.undo();
-				
-				if(!isSuccessful) {
-					JOptionPane.showMessageDialog(viewFrame, "Can't undo!");
+
+				if(!networkManager.undo()) {
+					JOptionPane.showMessageDialog(viewFrame, "Undo failed");
 				}
 			}
 		});
