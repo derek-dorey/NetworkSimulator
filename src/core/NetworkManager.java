@@ -27,33 +27,34 @@ public class NetworkManager {
 	}
 	
 	public void createNode(String id) {
-		nodeNetwork.createNode(id);
-		for(NetworkListener n: networkListeners){
-			n.createNode(id);
+		if(nodeNetwork.createNode(id)){
+			for(NetworkListener n: networkListeners){
+				n.createNode(id);
+			}
 		}
-	
 	}
 	
 	public void destroyNode(String id) {
-		nodeNetwork.destroyNode(id);
-		for(NetworkListener n: networkListeners){
-			n.destroyNode(id);
+		if(nodeNetwork.destroyNode(id)){
+			for(NetworkListener n: networkListeners){
+				n.destroyNode(id);
+			}
 		}
-
 	}
 	
 	public void connectNodes(String idA, String idB) {
-		nodeNetwork.connectNodes(idA, idB);
-		for(NetworkListener n: networkListeners){
-			n.connectNodes(idA, idB);
+		if(nodeNetwork.connectNodes(idA, idB)){
+			for(NetworkListener n: networkListeners){
+				n.connectNodes(idA, idB);
+			}
 		}
-
 	}
 	
 	public void disconnectNodes(String idA, String idB) {
-		nodeNetwork.disconnectNodes(idA, idB);
-		for(NetworkListener n: networkListeners){
-			n.disconnectNodes(idA, idB);
+		if(nodeNetwork.disconnectNodes(idA, idB)){
+			for(NetworkListener n: networkListeners){
+				n.disconnectNodes(idA, idB);
+			}
 		}
 	
 	}
