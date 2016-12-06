@@ -23,6 +23,7 @@ public class ViewFrame extends JFrame {
 	private JButton btnRate;
 	private JButton btnAlgorithm;
 	private JButton btnStep;
+	private JButton btnMetrics;
 
 
 	/**
@@ -30,16 +31,16 @@ public class ViewFrame extends JFrame {
 	 */
 	public ViewFrame(GraphHandler gh) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 813, 578);
+		setBounds(100, 100, 923, 627);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 		
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.columnWidths = new int[]{0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{1, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
@@ -114,10 +115,17 @@ public class ViewFrame extends JFrame {
 		gbc_btnAlgorithm.gridy = 1;
 		contentPane.add(btnAlgorithm, gbc_btnAlgorithm);
 		
+		btnMetrics = new JButton("Metrics");
+		GridBagConstraints gbc_btnMetrics = new GridBagConstraints();
+		gbc_btnMetrics.insets = new Insets(0, 0, 0, 5);
+		gbc_btnMetrics.gridx = 10;
+		gbc_btnMetrics.gridy = 1;
+		contentPane.add(btnMetrics, gbc_btnMetrics);
+		
 		btnStep = new JButton("Step");
 		GridBagConstraints gbc_btnStep = new GridBagConstraints();
 		gbc_btnStep.insets = new Insets(0, 0, 0, 5);
-		gbc_btnStep.gridx = 10;
+		gbc_btnStep.gridx = 11;
 		gbc_btnStep.gridy = 1;
 		contentPane.add(btnStep, gbc_btnStep);
 		setVisible(true);
@@ -152,5 +160,8 @@ public class ViewFrame extends JFrame {
 	}
 	public JButton getBtnStep() {
 		return btnStep;
+	}
+	public JButton getBtnMetrics() {
+		return btnMetrics;
 	}
 }
