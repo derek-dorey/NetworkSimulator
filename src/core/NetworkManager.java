@@ -10,9 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+
 import org.xml.sax.SAXException;
 import core.routing.RoutingAlgorithm;
 
@@ -20,16 +23,17 @@ public class NetworkManager {
 	
 	private Set<NetworkListener> networkListeners = new HashSet<>();
 	private Network nodeNetwork;
+	private Stack<String> history = new Stack<String>();
 	
 	public NetworkManager() {
 	}
 
 	public void registerNetworkListener(NetworkListener nl) {
 		networkListeners.add(nl);
-		
 	}
 	
 	public void createNode(String id) {
+		recordHistory();
 		if(nodeNetwork.createNode(id)){
 			for(NetworkListener n: networkListeners){
 				n.createNode(id);
@@ -38,6 +42,7 @@ public class NetworkManager {
 	}
 	
 	public void destroyNode(String id) {
+		recordHistory();
 		if(nodeNetwork.destroyNode(id)){
 			for(NetworkListener n: networkListeners){
 				n.destroyNode(id);
@@ -46,6 +51,7 @@ public class NetworkManager {
 	}
 	
 	public void connectNodes(String idA, String idB) {
+		recordHistory();
 		if(nodeNetwork.connectNodes(idA, idB)){
 			for(NetworkListener n: networkListeners){
 				n.connectNodes(idA, idB);
@@ -54,6 +60,7 @@ public class NetworkManager {
 	}
 	
 	public void disconnectNodes(String idA, String idB) {
+		recordHistory();
 		if(nodeNetwork.disconnectNodes(idA, idB)){
 			for(NetworkListener n: networkListeners){
 				n.disconnectNodes(idA, idB);
@@ -63,12 +70,13 @@ public class NetworkManager {
 	}
 	
 	public void step() {
+		recordHistory();
 		nodeNetwork.step();
-		/*for(NetworkListener n: networkListeners){
-			//network is missing a method which returns (Map<String,List<integers>> status)
-			//n.updateMessages(status);
-			
-		}*/
+		
+		Map<String, List<Integer>> status = getNetworkBuffers();
+		for(NetworkListener n: networkListeners){
+			n.updateMessages(status);
+		}
 	
 	}
 	
@@ -86,13 +94,13 @@ public class NetworkManager {
 	}
 	
 	public void setAlgorithm(RoutingAlgorithm alg){
+		recordHistory();
 		nodeNetwork.setRoutingAlgorithm(alg);
 	}
 	
-	@SuppressWarnings("static-access")
 	public void load(InputStream in) {
 		try {
-			nodeNetwork.fromXml(new BufferedReader(new InputStreamReader(in))
+			nodeNetwork = Network.fromXml(new BufferedReader(new InputStreamReader(in))
 					  .lines().collect(Collectors.joining("\n")));
 			
 		} catch (IOException e) {
@@ -105,12 +113,13 @@ public class NetworkManager {
 	}
 	
 	public void setRate(int rate) {
+		recordHistory();
 		if(rate>0) {
 			nodeNetwork.setMessageCreationPeriod(rate);
 		}
 	}
 	
-	public Map<String, List<Integer>> getBuffers() {
+	private Map<String, List<Integer>> getNetworkBuffers() {
 		
 		Map<String, List<Integer>> nodeBuffers = new HashMap<String, List<Integer>>();
 		
@@ -121,6 +130,15 @@ public class NetworkManager {
 		return nodeBuffers;	
 	}
 
+	private void recordHistory(){
+		try {
+			history.push(this.nodeNetwork.toXml());
+		} catch (TransformerConfigurationException | ParserConfigurationException e) {
+			System.err.println("Recording history failed.");
+			e.printStackTrace();
+		}
+	}
+	
 	public void registerNetwork(Network network) {
 		nodeNetwork = network;
 	}
