@@ -295,7 +295,7 @@ public class Network {
 	 * @return true iff a new distinct connection was formed successfully.
 	 */
 	public boolean connectNodes(String id1, String id2) {
-		if(networkNodes.containsKey(id1) && networkNodes.containsKey(id2)){
+		if(!id1.equals(id2) && networkNodes.containsKey(id1) && networkNodes.containsKey(id2)){
 			boolean temp = networkNodes.get(id1).connectTo(networkNodes.get(id2));
 			temp = networkNodes.get(id2).connectTo(networkNodes.get(id1)) || temp;
 			return temp;
