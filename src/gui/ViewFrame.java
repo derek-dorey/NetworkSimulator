@@ -30,6 +30,8 @@ public class ViewFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public ViewFrame(GraphHandler gh) {
+		super("Bits Please Network Simulator");
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 923, 627);
 		contentPane = new JPanel();
