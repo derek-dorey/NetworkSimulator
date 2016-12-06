@@ -88,7 +88,7 @@ public class NetworkTests extends TestCase
 		assertEquals(true,network.disconnectNodes("nodeA", "nodeB"));
 	}
 	
-	public void testosAconnectedGraph()
+	public void testisAconnectedGraph()
 	{
 		network.createNode("nodeA");
 		network.createNode("nodeB");
@@ -100,10 +100,15 @@ public class NetworkTests extends TestCase
 	}
 	
 	public void testDisconnectAllNodes(){
+	
 		network.createNode("nodeA");
 		network.createNode("nodeB");
 		network.createNode("nodeC");
+		network.connectNodes("nodeA", "nodeB");
+		network.connectNodes("nodeC", "nodeB");
 		network.disconnectAllNodes();
+		
+		
 		assertFalse(network.isAConnectedGraph());
 	}
 	
@@ -120,6 +125,27 @@ public class NetworkTests extends TestCase
 		
 		assert(network.getMessageBufferFromNode("nodeB") != null);
 		
+	}
+	
+	public void testclearNetworkBuffers()
+	{
+		network.createNode("nodeA");
+		network.createNode("nodeB");
+		network.connectNodes("nodeA", "nodeB");
+		
+		network.step();
+		
+		if(network.getMessageBufferFromNode("nodeA") != null)
+		{
+			network.clearNetworkBuffers();
+			assert(network.getMessageBufferFromNode("nodeA").isEmpty());
+		}
+		
+		if(network.getMessageBufferFromNode("nodeB") != null)
+		{
+			network.clearNetworkBuffers();
+			assert(network.getMessageBufferFromNode("nodeB").isEmpty());
+		}
 	}
 	
 }
