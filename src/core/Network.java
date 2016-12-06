@@ -527,12 +527,18 @@ public class Network {
 			int count = 0;
 			Set<Integer> ids = messageIdsBySourceAndDestination.get(sourceId).get(destinationId);
 			for(Integer id : ids){
-				if(finishedMessages.containsKey(id) && messageFloating(id)){
-					count++;
+				if(finishedMessages.containsKey(id)){
+					long miniRunningTotal = 0;
+					boolean good = false;
 					for(Message m : finishedMessages.get(id)){
+						miniRunningTotal += m.hops();
 						if(m.received()){
-							runningTotal += m.hops();
+							good = true;
 						}
+					}
+					if(good){
+						runningTotal+=miniRunningTotal;
+						count++;
 					}
 				}
 			}
