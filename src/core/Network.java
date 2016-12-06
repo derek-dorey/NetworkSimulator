@@ -76,6 +76,10 @@ public class Network {
 	}
 	
 	private Network(Document doc){
+		this.networkNodes = new HashMap<>();
+		this.messageIdsBySourceAndDestination = new HashMap<>();
+		this.finishedMessages = new HashMap<>();
+		
 		Element rootElement = (Element) doc.getElementsByTagName("Network").item(0);
 		
 		//Set field values
