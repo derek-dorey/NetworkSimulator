@@ -569,13 +569,20 @@ public class Network {
 	/**
 	 * simulate one cycle
 	 */
-	public void step() {
+	public boolean step() {
+		if(!this.isAConnectedGraph()){
+			return false;
+		}
 		if((stepNumber++)%messageCreationPeriod == 0 && networkNodes.size()>=2){
 			String sender = randomElement(networkNodes.keySet());
 			String dest = sender;
 			while(sender.equals(dest = randomElement(networkNodes.keySet()))){}
+			
 			Message m = new Message(messageNumber++, sender, dest);
+			
+			addMesageIdToMessageIdsBySourceAndDestination(m);
 			networkNodes.get(sender).receiveMessage(m);
+						
 		}
 		for(NetworkNode n : networkNodes.values()){
 			n.sendMessage();
@@ -583,6 +590,7 @@ public class Network {
 		for(NetworkNode n : networkNodes.values()){
 			n.flushBuffer();
 		}
+		return true;
 	}
 	private String randomElement(Set<String> set){
 		int i = (int)(Math.random()*((double)set.size()));
@@ -591,6 +599,15 @@ public class Network {
 			iter.next();
 		}
 		return iter.next();
+	}
+	private void addMesageIdToMessageIdsBySourceAndDestination(Message m){
+		if(!messageIdsBySourceAndDestination.containsKey(m.getSender())){
+			messageIdsBySourceAndDestination.put(m.getSender(), new HashMap<>());
+		}
+		if(!messageIdsBySourceAndDestination.get(m.getSender()).containsKey(m.getDestination())){
+			messageIdsBySourceAndDestination.get(m.getSender()).put(m.getDestination(), new HashSet<>());
+		}
+		messageIdsBySourceAndDestination.get(m.getSender()).get(m.getDestination()).add(m.getId());
 	}
 	
 	/**
